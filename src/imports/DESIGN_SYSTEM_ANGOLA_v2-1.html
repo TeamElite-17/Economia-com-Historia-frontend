@@ -1,0 +1,2348 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Economia com História — Angola · Design System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════════════════
+       DESIGN TOKENS — ECONOMIA COM HISTÓRIA · ANGOLA
+    ═══════════════════════════════════════════════════════ */
+    :root {
+      /* ── PALETA PRINCIPAL (Bandeira de Angola) ── */
+      --angola-red:        #CC092F;
+      --angola-red-dark:   #A00722;
+      --angola-red-light:  #E8204A;
+      --angola-red-muted:  rgba(204,9,47,0.10);
+      --angola-red-glow:   rgba(204,9,47,0.25);
+
+      --angola-black:      #1A1008;
+      --angola-black-soft: #231608;
+
+      --angola-gold:       #FFCC00;
+      --angola-gold-dark:  #D4A800;
+      --angola-gold-light: #FFE066;
+      --angola-gold-muted: rgba(255,204,0,0.12);
+      --angola-gold-glow:  rgba(255,204,0,0.30);
+
+      /* ── NEUTROS FINANCEIROS ── */
+      --grafite:      #2C2018;
+      --grafite-mid:  #3A2C1C;
+      --grafite-soft: #4A3828;
+
+      --cinza-corp:   #E6E6E6;
+      --cinza-light:  #F2F2F2;
+      --cinza-border: #D0D0D0;
+      --cinza-muted:  #999999;
+      --cinza-text:   #666666;
+
+      --branco:       #FFFFFF;
+      --branco-warm:  #FAFAFA;
+
+      /* ── SEMÂNTICAS ── */
+      --success:      #1A9E5C;
+      --success-bg:   #E8F5EE;
+      --warning:      #D97706;
+      --warning-bg:   #FEF3C7;
+      --info:         #1D6FA4;
+      --info-bg:      #DBEAFE;
+      --danger:       #CC092F;
+      --danger-bg:    rgba(204,9,47,0.08);
+
+      /* ── TYPOGRAPHY ── */
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body:    'Inter', -apple-system, sans-serif;
+      --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+
+      /* ── SPACING ── */
+      --sp-1:  4px;  --sp-2:  8px;  --sp-3:  12px; --sp-4:  16px;
+      --sp-5:  20px; --sp-6:  24px; --sp-8:  32px; --sp-10: 40px;
+      --sp-12: 48px; --sp-16: 64px;
+
+      /* ── RADIUS ── */
+      --r-sm:   4px;  --r-md: 8px;
+      --r-lg:   12px; --r-xl: 16px;
+      --r-2xl:  24px; --r-full: 9999px;
+
+      /* ── SHADOWS ── */
+      --shadow-sm:  0 1px 3px rgba(0,0,0,0.12);
+      --shadow-md:  0 4px 12px rgba(0,0,0,0.15);
+      --shadow-lg:  0 8px 24px rgba(0,0,0,0.18);
+      --shadow-red: 0 0 0 3px var(--angola-red-glow);
+      --shadow-gold:0 0 0 3px var(--angola-gold-glow);
+    }
+
+    /* ─── RESET ─── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ─── TRADITIONAL ANGOLAN TEXTURE (Tchokwe Sona pattern) ─── */
+    body {
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--grafite);
+      background-color: #F5F0EA;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='%23F5F0EA'/%3E%3Cg fill='none' stroke='%23CC092F' stroke-width='0.5' opacity='0.12'%3E%3Crect x='5' y='5' width='20' height='20' rx='1'/%3E%3Crect x='35' y='5' width='20' height='20' rx='1'/%3E%3Crect x='5' y='35' width='20' height='20' rx='1'/%3E%3Crect x='35' y='35' width='20' height='20' rx='1'/%3E%3Cline x1='15' y1='5' x2='15' y2='25'/%3E%3Cline x1='5' y1='15' x2='25' y2='15'/%3E%3Cline x1='45' y1='5' x2='45' y2='25'/%3E%3Cline x1='35' y1='15' x2='55' y2='15'/%3E%3Cline x1='15' y1='35' x2='15' y2='55'/%3E%3Cline x1='5' y1='45' x2='25' y2='45'/%3E%3Cline x1='45' y1='35' x2='45' y2='55'/%3E%3Cline x1='35' y1='45' x2='55' y2='45'/%3E%3C/g%3E%3Cg fill='none' stroke='%23FFCC00' stroke-width='0.5' opacity='0.10'%3E%3Cpolygon points='30,2 32,12 30,22 28,12'/%3E%3Cpolygon points='2,30 12,32 22,30 12,28'/%3E%3Cpolygon points='38,30 48,32 58,30 48,28'/%3E%3Cpolygon points='30,38 32,48 30,58 28,48'/%3E%3C/g%3E%3C/svg%3E");
+      padding: 48px 40px;
+    }
+
+    /* ─── LAYOUT ─── */
+    .container { max-width: 1240px; margin: 0 auto; }
+
+    .section {
+      background: var(--branco);
+      border: 1px solid var(--cinza-border);
+      border-radius: var(--r-2xl);
+      padding: 40px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle Tchokwe corner decoration on each section */
+    .section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 80px; height: 80px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cg fill='none' stroke='%23CC092F' stroke-width='1' opacity='0.08'%3E%3Cpath d='M0,0 L40,40 L0,80'/%3E%3Cpath d='M20,0 L60,40 L20,80'/%3E%3Cpath d='M0,20 L40,60 L80,20'/%3E%3C/g%3E%3C/svg%3E") no-repeat;
+      pointer-events: none;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 36px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--cinza-corp);
+    }
+
+    .section-number {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--angola-red);
+      background: var(--angola-red-muted);
+      border: 1px solid rgba(204,9,47,0.18);
+      padding: 3px 10px;
+      border-radius: var(--r-sm);
+      letter-spacing: 0.08em;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--angola-black);
+    }
+
+    .section-desc {
+      font-size: 12px;
+      color: var(--cinza-muted);
+      margin-left: auto;
+      font-style: italic;
+    }
+
+    .row {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .row:last-child { margin-bottom: 0; }
+
+    /* ─── PAGE HEADER ─── */
+    .page-header {
+      margin-bottom: 56px;
+      position: relative;
+      padding: 48px;
+      background: var(--angola-black);
+      border-radius: var(--r-2xl);
+      overflow: hidden;
+    }
+
+    /* Tchokwe/Sona decorative pattern background for header */
+    .page-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cg fill='none' stroke='%23FFCC00' stroke-width='0.7' opacity='0.08'%3E%3Crect x='10' y='10' width='20' height='20'/%3E%3Crect x='50' y='10' width='20' height='20'/%3E%3Crect x='10' y='50' width='20' height='20'/%3E%3Crect x='50' y='50' width='20' height='20'/%3E%3Cline x1='20' y1='10' x2='20' y2='30'/%3E%3Cline x1='10' y1='20' x2='30' y2='20'/%3E%3Cline x1='60' y1='10' x2='60' y2='30'/%3E%3Cline x1='50' y1='20' x2='70' y2='20'/%3E%3Cline x1='20' y1='50' x2='20' y2='70'/%3E%3Cline x1='10' y1='60' x2='30' y2='60'/%3E%3Cline x1='60' y1='50' x2='60' y2='70'/%3E%3Cline x1='50' y1='60' x2='70' y2='60'/%3E%3Cpath d='M30,0 L40,10 L50,0' fill='none'/%3E%3Cpath d='M30,80 L40,70 L50,80' fill='none'/%3E%3Cpath d='M0,30 L10,40 L0,50' fill='none'/%3E%3Cpath d='M80,30 L70,40 L80,50' fill='none'/%3E%3C/g%3E%3Cg fill='none' stroke='%23CC092F' stroke-width='0.5' opacity='0.10'%3E%3Ccircle cx='40' cy='40' r='15'/%3E%3Ccircle cx='40' cy='40' r='8'/%3E%3Ccircle cx='40' cy='40' r='2'/%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* Angola flag stripe — left side decorative bar */
+    .page-header::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 6px;
+      background: linear-gradient(to bottom, var(--angola-red) 50%, var(--angola-black) 50%);
+    }
+
+    .page-flag-stripe {
+      position: absolute;
+      top: 0; right: 0;
+      width: 200px; height: 100%;
+      background: linear-gradient(135deg, transparent 60%, rgba(204,9,47,0.08) 60%);
+      pointer-events: none;
+    }
+
+    .page-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--angola-gold);
+      background: rgba(255,204,0,0.10);
+      border: 1px solid rgba(255,204,0,0.25);
+      padding: 4px 14px;
+      border-radius: var(--r-sm);
+      display: inline-block;
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 48px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: var(--branco);
+      margin-bottom: 8px;
+      line-height: 1.1;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-title .accent-red  { color: var(--angola-red); }
+    .page-title .accent-gold { color: var(--angola-gold); }
+
+    .page-subtitle {
+      font-size: 14px;
+      color: rgba(255,255,255,0.55);
+      max-width: 540px;
+      line-height: 1.75;
+      position: relative;
+      z-index: 1;
+      margin-top: 12px;
+    }
+
+    .page-meta {
+      display: flex;
+      gap: 24px;
+      margin-top: 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .page-meta-value {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--angola-gold);
+    }
+
+    .page-meta-label {
+      font-size: 10px;
+      color: rgba(255,255,255,0.40);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ─── SUBSECTIONS ─── */
+    .subsection { margin-bottom: 32px; }
+    .subsection:last-child { margin-bottom: 0; }
+
+    .subsection-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--cinza-muted);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .subsection-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--cinza-corp);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       SECTION 1 — COLOR SYSTEM
+    ═══════════════════════════════════════════════════════ */
+    .color-group { margin-bottom: 32px; }
+
+    .color-group-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cinza-muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .color-group-title::after {
+      content: ''; flex: 1;
+      height: 1px; background: var(--cinza-corp);
+    }
+
+    .color-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .color-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 80px;
+    }
+
+    .color-swatch {
+      width: 80px;
+      height: 48px;
+      border-radius: var(--r-md);
+      border: 1px solid rgba(0,0,0,0.08);
+      position: relative;
+    }
+
+    .color-swatch.main-swatch {
+      height: 64px;
+      box-shadow: var(--shadow-md);
+    }
+    .color-swatch.main-swatch::after {
+      content: '★ PRINCIPAL';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 7px;
+      color: var(--angola-red);
+      white-space: nowrap;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .color-label {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: var(--cinza-text);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* Usage semantic cards */
+    .color-usage-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .color-usage-card {
+      border-radius: var(--r-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .color-usage-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .color-usage-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--r-md);
+      flex-shrink: 0;
+    }
+
+    .color-usage-name {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .color-usage-hex {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--cinza-muted);
+    }
+
+    .color-usage-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .color-usage-list li {
+      font-size: 11px;
+      color: var(--cinza-text);
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .color-usage-list li::before {
+      content: '→';
+      font-family: var(--font-mono);
+      font-size: 10px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Texture preview strip */
+    .texture-strip {
+      height: 80px;
+      border-radius: var(--r-lg);
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 12px;
+    }
+
+    .texture-name {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+
+    .texture-desc {
+      font-size: 11px;
+      opacity: 0.7;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       SECTION 2 — TYPOGRAPHY
+    ═══════════════════════════════════════════════════════ */
+    .type-scale { display: flex; flex-direction: column; gap: 0; }
+
+    .type-row {
+      display: grid;
+      grid-template-columns: 200px 90px 90px 1fr;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--cinza-corp);
+    }
+    .type-row:last-child { border-bottom: none; }
+
+    .type-meta { display: flex; flex-direction: column; gap: 4px; }
+    .type-name { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--grafite); }
+    .type-use  { font-size: 11px; color: var(--cinza-muted); }
+    .type-spec { font-family: var(--font-mono); font-size: 10px; color: var(--cinza-muted); }
+    .type-preview { color: var(--grafite); }
+
+    /* ═══════════════════════════════════════════════════════
+       SECTION 3 — BUTTONS
+    ═══════════════════════════════════════════════════════ */
+    .btn-grid { display: flex; flex-direction: column; gap: 24px; }
+    .btn-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn-row-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--cinza-muted);
+      width: 90px;
+      flex-shrink: 0;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-sm  { font-size: 12px; padding: 7px 14px; border-radius: var(--r-md); }
+    .btn-md  { font-size: 13px; padding: 10px 20px; border-radius: var(--r-md); }
+    .btn-lg  { font-size: 14px; padding: 13px 28px; border-radius: var(--r-lg); }
+
+    .btn-primary {
+      background: var(--angola-red);
+      color: var(--branco);
+      border-color: var(--angola-red);
+      box-shadow: 0 2px 8px rgba(204,9,47,0.30);
+    }
+    .btn-primary:hover { background: var(--angola-red-dark); box-shadow: 0 4px 14px rgba(204,9,47,0.40); transform: translateY(-1px); }
+
+    .btn-gold {
+      background: var(--angola-gold);
+      color: var(--angola-black);
+      border-color: var(--angola-gold-dark);
+      box-shadow: 0 2px 8px rgba(255,204,0,0.30);
+    }
+    .btn-gold:hover { background: var(--angola-gold-dark); box-shadow: 0 4px 14px rgba(255,204,0,0.40); transform: translateY(-1px); }
+
+    .btn-dark {
+      background: var(--grafite);
+      color: var(--branco);
+      border-color: var(--grafite);
+    }
+    .btn-dark:hover { background: var(--angola-black); transform: translateY(-1px); }
+
+    .btn-outline-red {
+      background: transparent;
+      color: var(--angola-red);
+      border-color: var(--angola-red);
+    }
+    .btn-outline-red:hover { background: var(--angola-red-muted); }
+
+    .btn-outline-gold {
+      background: transparent;
+      color: var(--angola-gold-dark);
+      border-color: var(--angola-gold);
+    }
+    .btn-outline-gold:hover { background: var(--angola-gold-muted); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--cinza-text);
+      border-color: var(--cinza-border);
+    }
+    .btn-ghost:hover { background: var(--cinza-light); border-color: var(--cinza-muted); }
+
+    .btn-link {
+      background: transparent;
+      color: var(--angola-red);
+      border-color: transparent;
+      padding-left: 0; padding-right: 0;
+    }
+    .btn-link:hover { color: var(--angola-red-dark); text-decoration: underline; }
+
+    .btn-subtle-red {
+      background: var(--angola-red-muted);
+      color: var(--angola-red);
+      border-color: rgba(204,9,47,0.18);
+    }
+    .btn-subtle-red:hover { background: rgba(204,9,47,0.16); }
+
+    .btn-disabled { opacity: 0.40; cursor: not-allowed; pointer-events: none; }
+
+    .btn-icon {
+      width: 38px; height: 38px;
+      padding: 0;
+      border-radius: var(--r-md);
+      background: transparent;
+      border-color: var(--cinza-border);
+      color: var(--cinza-text);
+      font-size: 16px;
+    }
+    .btn-icon:hover { background: var(--cinza-light); }
+
+    /* Quiz specific buttons */
+    .btn-quiz {
+      background: linear-gradient(135deg, var(--angola-red) 0%, var(--angola-red-dark) 100%);
+      color: var(--branco);
+      border: none;
+      border-radius: var(--r-lg);
+      font-size: 14px;
+      padding: 14px 32px;
+      box-shadow: 0 4px 16px rgba(204,9,47,0.35);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-quiz::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+      transition: left 0.4s ease;
+    }
+    .btn-quiz:hover::before { left: 150%; }
+
+    /* ═══════════════════════════════════════════════════════
+       SECTION 4 — INPUTS / FORMS
+    ═══════════════════════════════════════════════════════ */
+    .input-grid { display: flex; flex-direction: column; gap: 20px; }
+    .input-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .input-row-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--cinza-muted);
+      width: 90px;
+      flex-shrink: 0;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding-top: 10px;
+    }
+    .input-demo { display: flex; flex-direction: column; gap: 5px; min-width: 240px; }
+    .input-label { font-size: 12px; font-weight: 600; color: var(--grafite); }
+    .input-label .req { color: var(--angola-red); margin-left: 2px; }
+    .input-helper { font-size: 11px; color: var(--cinza-muted); }
+    .input-error-text { font-size: 11px; color: var(--angola-red); font-weight: 500; }
+
+    .input {
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--grafite);
+      background: var(--branco);
+      border: 1.5px solid var(--cinza-border);
+      border-radius: var(--r-md);
+      padding: 9px 13px;
+      transition: all 0.18s ease;
+      outline: none;
+    }
+    .input:focus { border-color: var(--angola-red); box-shadow: var(--shadow-red); }
+    .input.error  { border-color: var(--angola-red); background: var(--danger-bg); }
+    .input.success{ border-color: var(--success); box-shadow: 0 0 0 3px rgba(26,158,92,0.18); }
+    .input:disabled { background: var(--cinza-corp); color: var(--cinza-muted); cursor: not-allowed; }
+
+    .input-with-icon { position: relative; }
+    .input-with-icon .input { padding-left: 38px; }
+    .input-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%; transform: translateY(-50%);
+      color: var(--cinza-muted);
+      font-size: 15px;
+      pointer-events: none;
+    }
+
+    .select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    /* Search input special */
+    .search-input-wrap {
+      position: relative;
+      width: 300px;
+    }
+    .search-input-wrap .input {
+      padding-left: 40px;
+      padding-right: 80px;
+      border-radius: var(--r-full);
+      background: var(--cinza-light);
+      border-color: transparent;
+    }
+    .search-input-wrap .input:focus {
+      background: var(--branco);
+      border-color: var(--angola-red);
+    }
+    .search-btn {
+      position: absolute;
+      right: 4px;
+      top: 50%; transform: translateY(-50%);
+      background: var(--angola-red);
+      color: white;
+      border: none;
+      border-radius: var(--r-full);
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       SECTION 5 — CARDS
+    ═══════════════════════════════════════════════════════ */
+    .cards-demo {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--branco);
+      border: 1px solid var(--cinza-border);
+      border-radius: var(--r-xl);
+      padding: 24px;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--angola-black);
+      margin-bottom: 8px;
+    }
+    .card-body { font-size: 13px; color: var(--cinza-text); line-height: 1.6; }
+
+    /* Module Card (Explorar Conteúdos) */
+    .card-module {
+      border-top: 4px solid var(--angola-red);
+      position: relative;
+      overflow: hidden;
+    }
+    .card-module::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 60px; height: 60px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cg fill='none' stroke='%23CC092F' stroke-width='0.8' opacity='0.10'%3E%3Crect x='5' y='5' width='15' height='15'/%3E%3Crect x='25' y='5' width='15' height='15'/%3E%3Crect x='5' y='25' width='15' height='15'/%3E%3Crect x='25' y='25' width='15' height='15'/%3E%3C/g%3E%3C/svg%3E") no-repeat;
+      pointer-events: none;
+    }
+
+    .card-module-icon {
+      width: 44px; height: 44px;
+      border-radius: var(--r-lg);
+      background: var(--angola-red-muted);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 14px;
+      border: 1px solid rgba(204,9,47,0.15);
+    }
+
+    .card-module-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--cinza-corp);
+    }
+
+    .card-module-tag {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--angola-red);
+      background: var(--angola-red-muted);
+      padding: 2px 8px;
+      border-radius: var(--r-full);
+      letter-spacing: 0.05em;
+    }
+
+    /* Stat Card (Indicador Financeiro) */
+    .card-stat {
+      border-left: 4px solid var(--angola-gold);
+      background: linear-gradient(135deg, var(--branco) 0%, #FFFDF0 100%);
+    }
+
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--angola-black);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label { font-size: 12px; color: var(--cinza-muted); margin-bottom: 10px; }
+    .stat-change { font-size: 12px; font-weight: 600; }
+    .stat-up   { color: var(--success); }
+    .stat-down { color: var(--angola-red); }
+
+    /* Quiz Card */
+    .card-quiz {
+      background: linear-gradient(135deg, var(--angola-black) 0%, var(--grafite) 100%);
+      border: none;
+      color: var(--branco);
+      position: relative;
+      overflow: hidden;
+    }
+    .card-quiz::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cg fill='none' stroke='%23FFCC00' stroke-width='0.6' opacity='0.08'%3E%3Crect x='10' y='10' width='20' height='20'/%3E%3Crect x='50' y='10' width='20' height='20'/%3E%3Crect x='10' y='50' width='20' height='20'/%3E%3Crect x='50' y='50' width='20' height='20'/%3E%3Cline x1='20' y1='0' x2='20' y2='80'/%3E%3Cline x1='60' y1='0' x2='60' y2='80'/%3E%3Cline x1='0' y1='20' x2='80' y2='20'/%3E%3Cline x1='0' y1='60' x2='80' y2='60'/%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .card-quiz .card-title { color: var(--branco); position: relative; z-index: 1; }
+    .card-quiz .card-body { color: rgba(255,255,255,0.60); position: relative; z-index: 1; }
+    .card-quiz-score {
+      position: relative; z-index: 1;
+      display: flex; align-items: baseline; gap: 4px;
+      margin: 16px 0 8px;
+    }
+    .card-quiz-score .big { font-family: var(--font-display); font-size: 44px; font-weight: 900; color: var(--angola-gold); line-height: 1; }
+    .card-quiz-score .small { font-size: 14px; color: rgba(255,255,255,0.50); }
+
+    /* Forum Card */
+    .card-forum {
+      border: 1px solid var(--cinza-border);
+      position: relative;
+    }
+    .card-forum-avatar {
+      width: 40px; height: 40px;
+      border-radius: var(--r-full);
+      background: var(--angola-red);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 16px; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .card-forum-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+    }
+    .card-forum-user { font-size: 13px; font-weight: 600; color: var(--grafite); }
+    .card-forum-time { font-size: 11px; color: var(--cinza-muted); }
+    .card-forum-body { font-size: 13px; color: var(--cinza-text); line-height: 1.6; }
+    .card-forum-footer {
+      display: flex; gap: 16px; margin-top: 14px;
+      padding-top: 12px; border-top: 1px solid var(--cinza-corp);
+    }
+    .forum-action {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 11px; color: var(--cinza-muted);
+      cursor: pointer;
+    }
+    .forum-action:hover { color: var(--angola-red); }
+
+    /* Elevated card */
+    .card-elevated {
+      box-shadow: var(--shadow-lg);
+      border: none;
+    }
+
+    /* Profile card */
+    .card-profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+    }
+    .card-profile-avatar {
+      width: 64px; height: 64px;
+      border-radius: var(--r-full);
+      background: linear-gradient(135deg, var(--angola-red) 0%, var(--angola-red-dark) 100%);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-size: 24px; font-weight: 700;
+      margin-bottom: 4px;
+      border: 3px solid var(--angola-gold);
+    }
+    .card-profile-name { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--angola-black); }
+    .card-profile-role { font-size: 12px; color: var(--cinza-muted); margin-bottom: 12px; }
+    .card-profile-stats {
+      display: flex; gap: 20px; width: 100%;
+      justify-content: center;
+      padding-top: 14px;
+      border-top: 1px solid var(--cinza-corp);
+    }
+    .profile-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .profile-stat-val { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--angola-red); }
+    .profile-stat-label { font-size: 10px; color: var(--cinza-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+    /* Map card */
+    .card-map {
+      background: var(--angola-black);
+      border: none;
+      color: white;
+      overflow: hidden;
+    }
+    .card-map-visual {
+      height: 100px;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2f2f2f 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px;
+      margin: -24px -24px 16px;
+      border-bottom: 2px solid var(--angola-gold);
+      position: relative;
+    }
+    .card-map-visual::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cg fill='none' stroke='%23FFCC00' stroke-width='0.5' opacity='0.12'%3E%3Ccircle cx='50' cy='50' r='30'/%3E%3Ccircle cx='50' cy='50' r='20'/%3E%3Ccircle cx='50' cy='50' r='10'/%3E%3Cline x1='50' y1='20' x2='50' y2='80'/%3E%3Cline x1='20' y1='50' x2='80' y2='50'/%3E%3C/g%3E%3C/svg%3E") repeat;
+    }
+    .card-map .card-title { color: var(--angola-gold); }
+    .card-map .card-body { color: rgba(255,255,255,0.60); }
+
+    /* ═══════════════════════════════════════════════════════
+       SECTION 6 — BADGES & TAGS
+    ═══════════════════════════════════════════════════════ */
+    .badge-grid { display: flex; flex-direction: column; gap: 20px; }
+    .badge-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .badge-row-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--cinza-muted);
+      width: 110px;
+      flex-shrink: 0;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: var(--r-full);
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+    /* App-specific badges */
+    .badge-modulo    { background: var(--angola-red-muted); color: var(--angola-red); border-color: rgba(204,9,47,0.18); }
+    .badge-quiz      { background: var(--angola-gold-muted); color: var(--angola-gold-dark); border-color: rgba(255,204,0,0.25); }
+    .badge-forum     { background: rgba(47,47,47,0.08); color: var(--grafite); border-color: rgba(47,47,47,0.18); }
+    .badge-novo      { background: var(--angola-red); color: white; }
+    .badge-destaque  { background: var(--angola-gold); color: var(--angola-black); }
+
+    /* Quiz result badges */
+    .badge-acertou   { background: var(--success-bg); color: var(--success); border-color: rgba(26,158,92,0.25); }
+    .badge-errou     { background: var(--danger-bg); color: var(--angola-red); border-color: rgba(204,9,47,0.18); }
+    .badge-parcial   { background: var(--warning-bg); color: var(--warning); border-color: rgba(217,119,6,0.25); }
+
+    /* Level / XP badges */
+    .xp-badge {
+      background: linear-gradient(135deg, var(--angola-gold) 0%, var(--angola-gold-dark) 100%);
+      color: var(--angola-black);
+      font-size: 11px; font-weight: 700;
+      padding: 3px 10px;
+      border-radius: var(--r-full);
+      box-shadow: 0 2px 6px rgba(255,204,0,0.30);
+    }
+
+    .level-badge {
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      width: 28px; height: 28px;
+      border-radius: var(--r-md);
+      background: var(--angola-black);
+      color: var(--angola-gold);
+      font-family: var(--font-display);
+      font-size: 13px; font-weight: 700;
+      border: 1.5px solid var(--angola-gold);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: var(--r-sm);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      border: 1px solid;
+    }
+
+    .tag-economia  { background: rgba(204,9,47,0.07); color: #9B0723; border-color: rgba(204,9,47,0.20); }
+    .tag-historia  { background: rgba(47,47,47,0.07); color: var(--grafite); border-color: rgba(47,47,47,0.25); }
+    .tag-geografia { background: rgba(255,204,0,0.10); color: #8B6900; border-color: rgba(255,204,0,0.30); }
+    .tag-cidadania { background: rgba(26,158,92,0.08); color: #0E6638; border-color: rgba(26,158,92,0.25); }
+    .tag-angola    { background: var(--angola-red); color: white; border-color: var(--angola-red-dark); }
+
+    /* Status indicators */
+    .status-indicator { display: inline-flex; align-items: center; gap: 6px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .status-online  { background: var(--success); box-shadow: 0 0 0 2px rgba(26,158,92,0.25); }
+    .status-away    { background: var(--warning); box-shadow: 0 0 0 2px rgba(217,119,6,0.25); }
+    .status-offline { background: var(--cinza-muted); }
+
+    /* ═══════════════════════════════════════════════════════
+       SECTION 7 — PROGRESS & CHARTS
+    ═══════════════════════════════════════════════════════ */
+    .progress-demos { display: flex; flex-direction: column; gap: 20px; }
+
+    .progress-wrap { display: flex; flex-direction: column; gap: 6px; }
+    .progress-header {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 12px; font-weight: 500; color: var(--grafite);
+    }
+    .progress-pct { font-family: var(--font-mono); font-size: 11px; color: var(--cinza-muted); }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--cinza-corp);
+      border-radius: var(--r-full);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: var(--r-full);
+      transition: width 0.5s ease;
+    }
+
+    .progress-fill-red  { background: linear-gradient(90deg, var(--angola-red) 0%, var(--angola-red-light) 100%); }
+    .progress-fill-gold { background: linear-gradient(90deg, var(--angola-gold-dark) 0%, var(--angola-gold) 100%); }
+    .progress-fill-success { background: linear-gradient(90deg, var(--success) 0%, #22C878 100%); }
+
+    /* Progress thick (XP bar) */
+    .progress-xp {
+      height: 14px;
+      background: rgba(0,0,0,0.08);
+      border-radius: var(--r-full);
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .progress-xp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--angola-gold-dark) 0%, var(--angola-gold) 60%, #FFE066 100%);
+      border-radius: var(--r-full);
+      position: relative;
+    }
+    .progress-xp-fill::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 4px; right: 4px;
+      height: 4px;
+      background: rgba(255,255,255,0.35);
+      border-radius: var(--r-full);
+    }
+
+    /* Bar chart */
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      height: 120px;
+      padding: 0 4px;
+    }
+    .bar-group { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+    .bar {
+      width: 100%;
+      border-radius: var(--r-sm) var(--r-sm) 0 0;
+      transition: opacity 0.2s;
+    }
+    .bar:hover { opacity: 0.8; }
+    .bar-label { font-family: var(--font-mono); font-size: 9px; color: var(--cinza-muted); text-transform: uppercase; }
+    .bar-val { font-size: 10px; font-weight: 600; color: var(--grafite); }
+
+    /* ═══════════════════════════════════════════════════════
+       SECTION 8 — SPACING & GRID
+    ═══════════════════════════════════════════════════════ */
+    .space-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .space-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .space-block {
+      background: linear-gradient(135deg, var(--angola-red-muted), var(--angola-gold-muted));
+      border: 1px dashed rgba(204,9,47,0.30);
+      border-radius: var(--r-sm);
+    }
+    .space-token { font-family: var(--font-mono); font-size: 9px; color: var(--cinza-muted); }
+    .space-px    { font-size: 10px; font-weight: 600; color: var(--grafite); }
+
+    /* Radius preview */
+    .radius-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .radius-chip { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .radius-box {
+      width: 56px; height: 56px;
+      background: var(--angola-red-muted);
+      border: 1.5px solid var(--angola-red);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       SECTION 9 — TAILWIND QUICK REF
+    ═══════════════════════════════════════════════════════ */
+    .tw-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .tw-table th {
+      background: var(--angola-black);
+      color: var(--angola-gold);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+    }
+    .tw-table th:first-child { border-radius: var(--r-md) 0 0 0; }
+    .tw-table th:last-child  { border-radius: 0 var(--r-md) 0 0; }
+    .tw-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--cinza-corp);
+      vertical-align: top;
+    }
+    .tw-table tr:last-child td { border-bottom: none; }
+    .tw-table tr:nth-child(even) td { background: var(--cinza-light); }
+    .tw-desc  { color: var(--grafite); font-weight: 500; white-space: nowrap; }
+    .tw-class { font-family: var(--font-mono); font-size: 10px; background: #F0F0F0; padding: 2px 6px; border-radius: 3px; color: var(--angola-red-dark); }
+    .tw-when  { color: var(--cinza-muted); font-size: 11px; }
+
+    /* ─── TEXTURES SHOWCASE ─── */
+    .texture-demo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .texture-card {
+      height: 120px;
+      border-radius: var(--r-xl);
+      display: flex;
+      align-items: flex-end;
+      padding: 14px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .texture-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Tchokwe Sona - cross/grid pattern */
+    .tx-sona {
+      background-color: var(--angola-black);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cg fill='none' stroke='%23FFCC00' stroke-width='0.8' opacity='0.25'%3E%3Crect x='5' y='5' width='12' height='12'/%3E%3Crect x='23' y='5' width='12' height='12'/%3E%3Crect x='5' y='23' width='12' height='12'/%3E%3Crect x='23' y='23' width='12' height='12'/%3E%3Cline x1='11' y1='5' x2='11' y2='17'/%3E%3Cline x1='5' y1='11' x2='17' y2='11'/%3E%3Cline x1='29' y1='5' x2='29' y2='17'/%3E%3Cline x1='23' y1='11' x2='35' y2='11'/%3E%3Cline x1='11' y1='23' x2='11' y2='35'/%3E%3Cline x1='5' y1='29' x2='17' y2='29'/%3E%3Cline x1='29' y1='23' x2='29' y2='35'/%3E%3Cline x1='23' y1='29' x2='35' y2='29'/%3E%3C/g%3E%3C/svg%3E");
+      color: var(--angola-gold);
+    }
+
+    /* Pano de Ambaca - diagonal stripes */
+    .tx-ambaca {
+      background-color: var(--angola-red);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30'%3E%3Cg fill='none' stroke='%231A1008' stroke-width='1.5' opacity='0.18'%3E%3Cline x1='0' y1='15' x2='15' y2='0'/%3E%3Cline x1='15' y1='30' x2='30' y2='15'/%3E%3Cline x1='0' y1='30' x2='30' y2='0'/%3E%3C/g%3E%3Cg fill='none' stroke='%23FFCC00' stroke-width='0.6' opacity='0.20'%3E%3Cline x1='7.5' y1='0' x2='7.5' y2='30'/%3E%3Cline x1='22.5' y1='0' x2='22.5' y2='30'/%3E%3Cline x1='0' y1='7.5' x2='30' y2='7.5'/%3E%3Cline x1='0' y1='22.5' x2='30' y2='22.5'/%3E%3C/g%3E%3C/svg%3E");
+      color: white;
+    }
+
+    /* Kongo diamond pattern */
+    .tx-kongo {
+      background-color: var(--grafite);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cg fill='none' stroke='%23CC092F' stroke-width='0.8' opacity='0.30'%3E%3Cpath d='M20,2 L38,20 L20,38 L2,20 Z'/%3E%3Cpath d='M20,10 L30,20 L20,30 L10,20 Z'/%3E%3Ccircle cx='20' cy='20' r='3'/%3E%3C/g%3E%3C/svg%3E");
+      color: var(--angola-gold);
+    }
+
+    /* Njau geometric circles */
+    .tx-njau {
+      background-color: #2A100A;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Cg fill='none' stroke='%23CC092F' stroke-width='0.8' opacity='0.40'%3E%3Ccircle cx='25' cy='25' r='18'/%3E%3Ccircle cx='25' cy='25' r='12'/%3E%3Ccircle cx='25' cy='25' r='6'/%3E%3Ccircle cx='25' cy='25' r='2'/%3E%3Cline x1='25' y1='7' x2='25' y2='43'/%3E%3Cline x1='7' y1='25' x2='43' y2='25'/%3E%3Cline x1='12.6' y1='12.6' x2='37.4' y2='37.4'/%3E%3Cline x1='37.4' y1='12.6' x2='12.6' y2='37.4'/%3E%3C/g%3E%3C/svg%3E");
+      color: var(--angola-gold);
+    }
+
+    /* Ovimbundu weave */
+    .tx-ovimbundu {
+      background-color: var(--angola-gold-dark);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect width='10' height='10' fill='%23CC092F' opacity='0.22'/%3E%3Crect x='10' y='10' width='10' height='10' fill='%23CC092F' opacity='0.22'/%3E%3Crect x='10' y='0' width='10' height='10' fill='%23000' opacity='0.10'/%3E%3Crect x='0' y='10' width='10' height='10' fill='%23000' opacity='0.10'/%3E%3C/svg%3E");
+      color: var(--angola-black);
+    }
+
+    /* Clean / digital */
+    .tx-digital {
+      background: linear-gradient(135deg, #F8F0E8 0%, #EDE0D0 100%);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30'%3E%3Cg fill='none' stroke='%23CC092F' stroke-width='0.5' opacity='0.15'%3E%3Cpath d='M15,0 L30,15 L15,30 L0,15 Z'/%3E%3Cpath d='M15,8 L22,15 L15,22 L8,15 Z'/%3E%3C/g%3E%3C/svg%3E");
+      color: var(--angola-black);
+    }
+
+    /* ─── ALERTS / NOTIFICATIONS ─── */
+    .alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: var(--r-lg);
+      border: 1px solid;
+      margin-bottom: 12px;
+    }
+    .alert:last-child { margin-bottom: 0; }
+    .alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .alert-content { flex: 1; }
+    .alert-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+    .alert-body  { font-size: 12px; line-height: 1.5; }
+
+    .alert-success { background: var(--success-bg); border-color: rgba(26,158,92,0.25); color: var(--success); }
+    .alert-success .alert-body { color: #1A5E38; }
+    .alert-warning { background: var(--warning-bg); border-color: rgba(217,119,6,0.25); color: var(--warning); }
+    .alert-warning .alert-body { color: #92510E; }
+    .alert-error   { background: var(--danger-bg); border-color: rgba(204,9,47,0.18); color: var(--angola-red); }
+    .alert-error .alert-body { color: #7A041B; }
+    .alert-info    { background: var(--info-bg); border-color: rgba(29,111,164,0.25); color: var(--info); }
+    .alert-info .alert-body { color: #0F4068; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      text-align: center;
+      padding: 32px;
+      margin-top: 16px;
+      color: var(--cinza-muted);
+      font-size: 12px;
+      line-height: 1.8;
+      border-top: 2px solid var(--cinza-corp);
+    }
+    footer .brand { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--angola-black); }
+    footer .red   { color: var(--angola-red); }
+    footer .gold  { color: var(--angola-gold-dark); }
+    .dot-sep { margin: 0 8px; color: var(--angola-gold); }
+
+    /* Helpers */
+    code { font-family: var(--font-mono); font-size: 11px; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- PAGE HEADER                                 -->
+  <!-- ════════════════════════════════════════════ -->
+  <header class="page-header">
+    <div class="page-flag-stripe"></div>
+    <div class="page-label">⚑ Design System · v1.0 · 2025</div>
+    <h1 class="page-title">
+      Economia<br>com <span class="accent-red">História</span><br><span class="accent-gold">Angola</span>
+    </h1>
+    <p class="page-subtitle">
+      Sistema de design para a aplicação educativa que integra história económica, identidade cultural angolana e tecnologia digital acessível.
+    </p>
+    <div class="page-meta">
+      <div class="page-meta-item">
+        <span class="page-meta-value">6</span>
+        <span class="page-meta-label">Cores Base</span>
+      </div>
+      <div class="page-meta-item">
+        <span class="page-meta-value">5</span>
+        <span class="page-meta-label">Módulos App</span>
+      </div>
+      <div class="page-meta-item">
+        <span class="page-meta-value">6</span>
+        <span class="page-meta-label">Texturas Trad.</span>
+      </div>
+      <div class="page-meta-item">
+        <span class="page-meta-value">Playfair + Inter</span>
+        <span class="page-meta-label">Tipografia</span>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SECTION 1: CORES                            -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">01</span>
+      <h2 class="section-title">Sistema de Cores</h2>
+      <span class="section-desc">Paleta Angola · Extensão Financeira</span>
+    </div>
+
+    <!-- Swatches -->
+    <div class="color-group">
+      <div class="color-group-title">Paleta Principal — Bandeira de Angola</div>
+      <div class="color-row">
+        <div class="color-chip">
+          <div class="color-swatch main-swatch" style="background:#CC092F;"></div>
+          <div class="color-label">#CC092F<br>Vermelho Angola</div>
+        </div>
+        <div class="color-chip" style="margin-top:8px">
+          <div class="color-swatch" style="background:#A00722;"></div>
+          <div class="color-label">#A00722<br>Vermelho Escuro</div>
+        </div>
+        <div class="color-chip" style="margin-top:8px">
+          <div class="color-swatch" style="background:#E8204A;"></div>
+          <div class="color-label">#E8204A<br>Vermelho Claro</div>
+        </div>
+        <div class="color-chip" style="margin-top:8px">
+          <div class="color-swatch" style="background:rgba(204,9,47,0.10); border: 1.5px dashed #CC092F;"></div>
+          <div class="color-label">10% opacity<br>Vermelho Muted</div>
+        </div>
+
+        <div class="color-chip" style="margin-left:24px">
+          <div class="color-swatch main-swatch" style="background:#1A1008;"></div>
+          <div class="color-label">#1A1008<br>Preto Angola</div>
+        </div>
+        <div class="color-chip" style="margin-top:8px">
+          <div class="color-swatch" style="background:#231608; border-color:rgba(255,255,255,0.1)"></div>
+          <div class="color-label">#231608<br>Preto Suave</div>
+        </div>
+        <div class="color-chip" style="margin-top:8px">
+          <div class="color-swatch" style="background:#2C2018;"></div>
+          <div class="color-label">#2C2018<br>Grafite</div>
+        </div>
+
+        <div class="color-chip" style="margin-left:24px">
+          <div class="color-swatch main-swatch" style="background:#FFCC00; border-color:rgba(0,0,0,0.12);"></div>
+          <div class="color-label">#FFCC00<br>Amarelo Dourado</div>
+        </div>
+        <div class="color-chip" style="margin-top:8px">
+          <div class="color-swatch" style="background:#D4A800; border-color:rgba(0,0,0,0.10);"></div>
+          <div class="color-label">#D4A800<br>Ouro Escuro</div>
+        </div>
+        <div class="color-chip" style="margin-top:8px">
+          <div class="color-swatch" style="background:#FFE066; border-color:rgba(0,0,0,0.08);"></div>
+          <div class="color-label">#FFE066<br>Ouro Claro</div>
+        </div>
+        <div class="color-chip" style="margin-top:8px">
+          <div class="color-swatch" style="background:rgba(255,204,0,0.12); border: 1.5px dashed #D4A800;"></div>
+          <div class="color-label">12% opacity<br>Ouro Muted</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="color-group-title">Extensão Financeira — Neutros Corporativos</div>
+      <div class="color-row">
+        <div class="color-chip">
+          <div class="color-swatch" style="background:#2C2018;"></div>
+          <div class="color-label">#2C2018<br>Cinza Grafite</div>
+        </div>
+        <div class="color-chip">
+          <div class="color-swatch" style="background:#3A2C1C;"></div>
+          <div class="color-label">#3A2C1C<br>Grafite Mid</div>
+        </div>
+        <div class="color-chip">
+          <div class="color-swatch" style="background:#4A3828;"></div>
+          <div class="color-label">#4A3828<br>Grafite Soft</div>
+        </div>
+        <div class="color-chip">
+          <div class="color-swatch" style="background:#E6E6E6;"></div>
+          <div class="color-label">#E6E6E6<br>Cinza Corp.</div>
+        </div>
+        <div class="color-chip">
+          <div class="color-swatch" style="background:#F2F2F2;"></div>
+          <div class="color-label">#F2F2F2<br>Cinza Claro</div>
+        </div>
+        <div class="color-chip">
+          <div class="color-swatch" style="background:#999999;"></div>
+          <div class="color-label">#999999<br>Cinza Muted</div>
+        </div>
+        <div class="color-chip">
+          <div class="color-swatch" style="background:#FFFFFF; border-color:#D0D0D0;"></div>
+          <div class="color-label">#FFFFFF<br>Branco Neutro</div>
+        </div>
+        <div class="color-chip">
+          <div class="color-swatch" style="background:#FAFAFA; border-color:#D0D0D0;"></div>
+          <div class="color-label">#FAFAFA<br>Branco Warm</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="color-group-title">Semânticas — Estados do Sistema</div>
+      <div style="display:flex; gap:16px; flex-wrap:wrap;">
+        <div style="background:#E8F5EE; border:1px solid rgba(26,158,92,0.25); border-radius:var(--r-lg); padding:16px 20px; min-width:160px;">
+          <div style="font-size:20px; margin-bottom:6px;">✓</div>
+          <div style="font-size:12px; font-weight:600; color:#1A9E5C;">Sucesso</div>
+          <div style="font-family:var(--font-mono); font-size:10px; color:var(--cinza-muted); margin-top:2px;">#1A9E5C</div>
+          <div style="font-size:11px; color:var(--cinza-text); margin-top:8px;">Quiz acertado · Módulo concluído</div>
+        </div>
+        <div style="background:#FEF3C7; border:1px solid rgba(217,119,6,0.25); border-radius:var(--r-lg); padding:16px 20px; min-width:160px;">
+          <div style="font-size:20px; margin-bottom:6px;">⚠</div>
+          <div style="font-size:12px; font-weight:600; color:#D97706;">Atenção</div>
+          <div style="font-family:var(--font-mono); font-size:10px; color:var(--cinza-muted); margin-top:2px;">#D97706</div>
+          <div style="font-size:11px; color:var(--cinza-text); margin-top:8px;">Notificação · Prazo próximo</div>
+        </div>
+        <div style="background:rgba(204,9,47,0.08); border:1px solid rgba(204,9,47,0.18); border-radius:var(--r-lg); padding:16px 20px; min-width:160px;">
+          <div style="font-size:20px; margin-bottom:6px;">✕</div>
+          <div style="font-size:12px; font-weight:600; color:#CC092F;">Erro</div>
+          <div style="font-family:var(--font-mono); font-size:10px; color:var(--cinza-muted); margin-top:2px;">#CC092F</div>
+          <div style="font-size:11px; color:var(--cinza-text); margin-top:8px;">Quiz errado · Falha de rede</div>
+        </div>
+        <div style="background:#DBEAFE; border:1px solid rgba(29,111,164,0.25); border-radius:var(--r-lg); padding:16px 20px; min-width:160px;">
+          <div style="font-size:20px; margin-bottom:6px;">ⓘ</div>
+          <div style="font-size:12px; font-weight:600; color:#1D6FA4;">Informação</div>
+          <div style="font-family:var(--font-mono); font-size:10px; color:var(--cinza-muted); margin-top:2px;">#1D6FA4</div>
+          <div style="font-size:11px; color:var(--cinza-text); margin-top:8px;">Dica · Conteúdo novo</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Usage guide -->
+    <div class="color-usage-grid">
+      <div class="color-usage-card" style="border:1.5px solid rgba(204,9,47,0.20); background:rgba(204,9,47,0.04);">
+        <div class="color-usage-header">
+          <div class="color-usage-dot" style="background:#CC092F;"></div>
+          <div>
+            <div class="color-usage-name" style="color:#CC092F;">Vermelho Angola</div>
+            <div class="color-usage-hex">#CC092F · Força · Energia · História</div>
+          </div>
+        </div>
+        <ul class="color-usage-list">
+          <li>Botões de ação principal (CTA)</li>
+          <li>Barra de navegação superior</li>
+          <li>Destaques e indicadores críticos</li>
+          <li>Marcadores de módulo activo</li>
+          <li>Border-top nos cards de módulo</li>
+        </ul>
+      </div>
+      <div class="color-usage-card" style="border:1.5px solid rgba(0,0,0,0.12); background:rgba(0,0,0,0.03);">
+        <div class="color-usage-header">
+          <div class="color-usage-dot" style="background:#1A1008;"></div>
+          <div>
+            <div class="color-usage-name" style="color:#1A1008;">Preto Angola</div>
+            <div class="color-usage-hex">#1A1008 · Autoridade · Elegância</div>
+          </div>
+        </div>
+        <ul class="color-usage-list">
+          <li>Fundo da navbar e page header</li>
+          <li>Cards de quiz e modo escuro</li>
+          <li>Títulos principais (Playfair)</li>
+          <li>Sidebars e painéis de navegação</li>
+          <li>Contraste máximo em fundos claros</li>
+        </ul>
+      </div>
+      <div class="color-usage-card" style="border:1.5px solid rgba(212,168,0,0.30); background:rgba(255,204,0,0.06);">
+        <div class="color-usage-header">
+          <div class="color-usage-dot" style="background:#FFCC00; border:1px solid #D4A800;"></div>
+          <div>
+            <div class="color-usage-name" style="color:#8B6900;">Amarelo Dourado</div>
+            <div class="color-usage-hex">#FFCC00 · Prosperidade · Riqueza</div>
+          </div>
+        </div>
+        <ul class="color-usage-list">
+          <li>Ícones e elementos premium</li>
+          <li>Gráficos financeiros positivos</li>
+          <li>Barras de XP e gamificação</li>
+          <li>Destaques em fundos escuros</li>
+          <li>Badges de conquista / nível</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SECTION 2: TEXTURAS TRADICIONAIS ANGOLANAS  -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">02</span>
+      <h2 class="section-title">Texturas Tradicionais Angolanas</h2>
+      <span class="section-desc">Decoração cultural · Fundos · Overlays</span>
+    </div>
+
+    <p style="font-size:13px; color:var(--cinza-text); margin-bottom:24px; line-height:1.7; max-width:700px;">
+      As texturas são inspiradas em padrões geométricos da arte tradicional angolana — <strong>desenhos Sona (Tchokwe)</strong>, <strong>tecidos Pano de Ambaca</strong>, <strong>padrões Kongo</strong> e <strong>cestaria Ovimbundu</strong>. Aplicam-se como overlays subtis em fundos de secções, cabeçalhos e cartões temáticos.
+    </p>
+
+    <div class="texture-demo-grid">
+      <div class="texture-card tx-sona">
+        <div>
+          <div class="texture-label" style="color:var(--angola-gold);">Tchokwe · Sona</div>
+          <div style="font-size:10px; opacity:0.55; color:var(--angola-gold); position:relative; z-index:1;">Grade + Cruz · Fundos dark</div>
+        </div>
+      </div>
+      <div class="texture-card tx-ambaca">
+        <div>
+          <div class="texture-label" style="color:white;">Pano de Ambaca</div>
+          <div style="font-size:10px; opacity:0.70; color:white; position:relative; z-index:1;">Diagonal · Headers · Banners</div>
+        </div>
+      </div>
+      <div class="texture-card tx-kongo">
+        <div>
+          <div class="texture-label" style="color:var(--angola-gold);">Padrão Kongo</div>
+          <div style="font-size:10px; opacity:0.55; color:var(--angola-gold); position:relative; z-index:1;">Losango · Cards premium</div>
+        </div>
+      </div>
+      <div class="texture-card tx-njau">
+        <div>
+          <div class="texture-label" style="color:var(--angola-gold);">Círculos Njau</div>
+          <div style="font-size:10px; opacity:0.55; color:var(--angola-gold); position:relative; z-index:1;">Concêntrico · Páginas de mapa</div>
+        </div>
+      </div>
+      <div class="texture-card tx-ovimbundu">
+        <div>
+          <div class="texture-label" style="color:var(--angola-black);">Cestaria Ovimbundu</div>
+          <div style="font-size:10px; opacity:0.65; color:var(--angola-black); position:relative; z-index:1;">Xadrez · Tabelas · Formulários</div>
+        </div>
+      </div>
+      <div class="texture-card tx-digital">
+        <div>
+          <div class="texture-label" style="color:var(--angola-black);">Digital · Clean</div>
+          <div style="font-size:10px; opacity:0.55; color:var(--angola-black); position:relative; z-index:1;">Losango suave · Fundo de ecrã</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px; padding:16px 20px; background:var(--angola-gold-muted); border:1px solid rgba(212,168,0,0.25); border-radius:var(--r-lg); font-size:12px; color:var(--grafite); line-height:1.7;">
+      <strong>📐 Regra de aplicação:</strong> Texturas escuras (Sona, Kongo, Njau) usam opacidade 6–12% em SVG; texturas claras (Ambaca, Ovimbundu) usam 10–18%. <strong>Nunca sobrepor duas texturas</strong> no mesmo elemento. O body da app usa a textura Digital a 8% de opacidade sobre fundo <code>#F5F0EA</code>.
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SECTION 3: TIPOGRAFIA                       -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">03</span>
+      <h2 class="section-title">Tipografia</h2>
+      <span class="section-desc">Playfair Display · Inter · JetBrains Mono</span>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Escala Tipográfica</div>
+      <div class="type-scale">
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">display-xl</div>
+            <div class="type-use">Título da App / Hero</div>
+          </div>
+          <div class="type-spec">48px</div>
+          <div class="type-spec">900 · Playfair</div>
+          <div class="type-preview" style="font-family:var(--font-display); font-size:48px; font-weight:900; line-height:1.1; letter-spacing:-0.02em; color:var(--angola-black);">Angola</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">display-lg</div>
+            <div class="type-use">Título de Página</div>
+          </div>
+          <div class="type-spec">36px</div>
+          <div class="type-spec">800 · Playfair</div>
+          <div class="type-preview" style="font-family:var(--font-display); font-size:36px; font-weight:800; line-height:1.15; color:var(--angola-black);">História Económica</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">heading-xl</div>
+            <div class="type-use">Título de Secção</div>
+          </div>
+          <div class="type-spec">24px</div>
+          <div class="type-spec">700 · Playfair</div>
+          <div class="type-preview" style="font-family:var(--font-display); font-size:24px; font-weight:700; color:var(--angola-black);">Inflação em Angola</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">heading-md</div>
+            <div class="type-use">Título de Card / Modal</div>
+          </div>
+          <div class="type-spec">18px</div>
+          <div class="type-spec">700 · Playfair</div>
+          <div class="type-preview" style="font-family:var(--font-display); font-size:18px; font-weight:700; color:var(--angola-black);">Reforma Monetária 1999</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">body-lg</div>
+            <div class="type-use">Texto principal / Artigo</div>
+          </div>
+          <div class="type-spec">15px</div>
+          <div class="type-spec">400 · Inter</div>
+          <div class="type-preview" style="font-size:15px; color:var(--grafite); line-height:1.7;">A urbanização acelerada transformou Luanda numa metrópole de contrastes económicos e culturais profundos.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">body-md</div>
+            <div class="type-use">Corpo padrão de UI</div>
+          </div>
+          <div class="type-spec">14px</div>
+          <div class="type-spec">400 · Inter</div>
+          <div class="type-preview" style="font-size:14px; color:var(--grafite);">A aplicação promove o ensino da história económica angolana de forma acessível e interativa.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">body-sm</div>
+            <div class="type-use">Descrições · Helper text</div>
+          </div>
+          <div class="type-spec">13px</div>
+          <div class="type-spec">400 · Inter</div>
+          <div class="type-preview" style="font-size:13px; color:var(--cinza-text);">Completa o módulo para desbloquear o próximo tema de estudo.</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">caption</div>
+            <div class="type-use">Labels · Timestamps</div>
+          </div>
+          <div class="type-spec">11px</div>
+          <div class="type-spec">500 · Inter</div>
+          <div class="type-preview" style="font-size:11px; color:var(--cinza-muted);">Publicado em 12 de Janeiro de 2025 · 8 min de leitura</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">label-caps</div>
+            <div class="type-use">Cabeçalhos de Tabela · Rótulos</div>
+          </div>
+          <div class="type-spec">10px</div>
+          <div class="type-spec">600 · Inter</div>
+          <div class="type-preview" style="font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.12em; color:var(--cinza-muted);">Período Económico · Fonte</div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-name">mono-code</div>
+            <div class="type-use">Dados · Código · HEX values</div>
+          </div>
+          <div class="type-spec">12px</div>
+          <div class="type-spec">400 · Mono</div>
+          <div class="type-preview" style="font-family:var(--font-mono); font-size:12px; color:var(--angola-red);">#CC092F · var(--angola-red)</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:32px; padding:20px 24px; background:var(--angola-black); border-radius:var(--r-xl); display:flex; gap:40px; flex-wrap:wrap;">
+      <div>
+        <div style="font-family:var(--font-mono); font-size:9px; color:rgba(255,204,0,0.50); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:10px;">Display · Títulos</div>
+        <div style="font-family:var(--font-display); font-size:22px; font-weight:700; color:white;">Playfair Display</div>
+        <div style="font-size:12px; color:rgba(255,255,255,0.45); margin-top:4px;">700 · 800 · 900 · Serif histórico</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono); font-size:9px; color:rgba(255,204,0,0.50); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:10px;">Body · UI</div>
+        <div style="font-family:var(--font-body); font-size:22px; font-weight:500; color:white;">Inter</div>
+        <div style="font-size:12px; color:rgba(255,255,255,0.45); margin-top:4px;">300 · 400 · 500 · 600 · 700 · Sans moderno</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono); font-size:9px; color:rgba(255,204,0,0.50); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:10px;">Código · Labels</div>
+        <div style="font-family:var(--font-mono); font-size:22px; font-weight:400; color:var(--angola-gold);">JetBrains Mono</div>
+        <div style="font-size:12px; color:rgba(255,255,255,0.45); margin-top:4px;">400 · 500 · Monospace</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SECTION 4: BOTÕES                           -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">04</span>
+      <h2 class="section-title">Botões</h2>
+      <span class="section-desc">Variantes · Tamanhos · Estados</span>
+    </div>
+
+    <div class="btn-grid">
+
+      <div class="btn-row">
+        <span class="btn-row-label">Variantes</span>
+        <button class="btn btn-primary btn-md">🎓 Começar Módulo</button>
+        <button class="btn btn-gold btn-md">⭐ Premium</button>
+        <button class="btn btn-dark btn-md">Explorar</button>
+        <button class="btn btn-outline-red btn-md">✕ Sair</button>
+        <button class="btn btn-outline-gold btn-md">🏆 Ver Ranking</button>
+        <button class="btn btn-ghost btn-md">Cancelar</button>
+        <button class="btn btn-link btn-md">Ver mais →</button>
+        <button class="btn btn-subtle-red btn-md">📖 Rever</button>
+      </div>
+
+      <div class="btn-row">
+        <span class="btn-row-label">Tamanhos</span>
+        <button class="btn btn-primary btn-sm">Pequeno</button>
+        <button class="btn btn-primary btn-md">Médio</button>
+        <button class="btn btn-primary btn-lg">Grande</button>
+      </div>
+
+      <div class="btn-row">
+        <span class="btn-row-label">Estados</span>
+        <button class="btn btn-primary btn-md">Normal</button>
+        <button class="btn btn-primary btn-md btn-disabled">Desactivado</button>
+        <button class="btn btn-quiz">🎯 Iniciar Quiz</button>
+      </div>
+
+      <div class="btn-row">
+        <span class="btn-row-label">Ícone</span>
+        <button class="btn btn-icon btn-md">🔍</button>
+        <button class="btn btn-icon btn-md">🔔</button>
+        <button class="btn btn-icon btn-md">⚙</button>
+        <button class="btn btn-icon btn-md">📌</button>
+        <button class="btn btn-icon btn-md" style="background:var(--angola-red-muted); border-color:rgba(204,9,47,0.20); color:var(--angola-red);">♥</button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SECTION 5: FORMULÁRIOS                      -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">05</span>
+      <h2 class="section-title">Formulários & Inputs</h2>
+      <span class="section-desc">Campos · Estados · Pesquisa</span>
+    </div>
+
+    <div class="input-grid">
+
+      <div class="input-row">
+        <span class="input-row-label">Padrão</span>
+        <div class="input-demo">
+          <label class="input-label">Nome completo<span class="req">*</span></label>
+          <input class="input" type="text" placeholder="Ex: Maria João Silva" />
+          <span class="input-helper">Usado no perfil público da aplicação</span>
+        </div>
+        <div class="input-demo">
+          <label class="input-label">Email</label>
+          <input class="input" type="email" placeholder="exemplo@angola.ao" />
+        </div>
+      </div>
+
+      <div class="input-row">
+        <span class="input-row-label">Com Ícone</span>
+        <div class="input-demo">
+          <label class="input-label">Pesquisar conteúdos</label>
+          <div class="input-with-icon">
+            <span class="input-icon">🔍</span>
+            <input class="input" type="text" placeholder="Inflação, reforma monetária…" />
+          </div>
+        </div>
+        <div class="input-demo">
+          <label class="input-label">Módulo</label>
+          <div class="input-with-icon">
+            <span class="input-icon">📚</span>
+            <select class="input select">
+              <option>Explorar Conteúdos</option>
+              <option>Quiz Interactivo</option>
+              <option>Fórum de Discussão</option>
+              <option>Comentários</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <span class="input-row-label">Estados</span>
+        <div class="input-demo">
+          <label class="input-label">Erro</label>
+          <input class="input error" type="text" value="email inválido" />
+          <span class="input-error-text">✕ Introduza um email válido</span>
+        </div>
+        <div class="input-demo">
+          <label class="input-label">Sucesso</label>
+          <input class="input success" type="text" value="maria@angola.ao" />
+          <span style="font-size:11px; color:var(--success); font-weight:500;">✓ Email verificado</span>
+        </div>
+        <div class="input-demo">
+          <label class="input-label">Desactivado</label>
+          <input class="input" type="text" value="Conta verificada" disabled />
+        </div>
+      </div>
+
+      <div class="input-row">
+        <span class="input-row-label">Pesquisa</span>
+        <div>
+          <div class="search-input-wrap">
+            <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--cinza-muted);font-size:14px;">🔍</span>
+            <input class="input" type="text" placeholder="Pesquisar em Angola…" />
+            <button class="search-btn">Buscar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <span class="input-row-label">Área de texto</span>
+        <div class="input-demo" style="flex:1; min-width:320px;">
+          <label class="input-label">Comentário / Reflexão</label>
+          <textarea class="input" rows="3" placeholder="Partilha a tua perspectiva sobre este tema histórico…" style="resize:vertical;"></textarea>
+          <span class="input-helper">Máximo 500 caracteres. Respeita os outros participantes.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SECTION 6: CARDS                            -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">06</span>
+      <h2 class="section-title">Cards de Módulo</h2>
+      <span class="section-desc">Explorar · Quiz · Fórum · Perfil · Mapa · Indicador</span>
+    </div>
+
+    <div class="cards-demo">
+
+      <!-- Module card -->
+      <div class="card card-module">
+        <div class="card-module-icon">📹</div>
+        <div class="card-title">Inflação em Angola</div>
+        <div class="card-body">Compreende os ciclos inflacionários desde a independência até às reformas do Kwanza.</div>
+        <div class="card-module-meta">
+          <span class="card-module-tag">VÍDEO</span>
+          <span class="card-module-tag">12 MIN</span>
+          <span style="margin-left:auto; font-size:11px; color:var(--cinza-muted);">✓ 3 exercícios</span>
+        </div>
+      </div>
+
+      <!-- Quiz card -->
+      <div class="card card-quiz">
+        <div class="card-title">Quiz do Módulo</div>
+        <div class="card-quiz-score">
+          <span class="big">87</span>
+          <span class="small">/ 100 pts</span>
+        </div>
+        <div class="card-body">Bom resultado! Revê a questão 3 sobre reforma monetária.</div>
+        <div style="margin-top:16px; position:relative; z-index:1;">
+          <button class="btn btn-gold btn-sm">🔄 Refazer Quiz</button>
+        </div>
+      </div>
+
+      <!-- Forum card -->
+      <div class="card card-forum">
+        <div class="card-forum-header">
+          <div class="card-forum-avatar">A</div>
+          <div>
+            <div class="card-forum-user">António Pinto</div>
+            <div class="card-forum-time">há 2 horas · Luanda</div>
+          </div>
+        </div>
+        <div class="card-forum-body">
+          "A migração interna aumentou a pressão sobre os serviços urbanos em Luanda. Como isso afectou a economia informal?"
+        </div>
+        <div class="card-forum-footer">
+          <span class="forum-action">💬 12 respostas</span>
+          <span class="forum-action">👍 24 gostos</span>
+          <span class="forum-action" style="margin-left:auto;">Partilhar</span>
+        </div>
+      </div>
+
+      <!-- Stat card -->
+      <div class="card card-stat">
+        <div class="stat-label">Taxa de Inflação · 2023</div>
+        <div class="stat-value">13.6<span style="font-size:20px;">%</span></div>
+        <div class="stat-change stat-down">↓ 8.2 p.p. face a 2022</div>
+        <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--cinza-corp);">
+          <div class="progress-bar"><div class="progress-fill progress-fill-gold" style="width:38%;"></div></div>
+          <div style="font-size:10px; color:var(--cinza-muted); margin-top:4px; font-family:var(--font-mono);">Meta BNA: 10%</div>
+        </div>
+      </div>
+
+      <!-- Profile card -->
+      <div class="card card-profile">
+        <div class="card-profile-avatar">M</div>
+        <div class="card-profile-name">Maria da Conceição</div>
+        <div class="card-profile-role">Estudante · 11.ª Classe · Huambo</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+          <span class="xp-badge">Nível 7</span>
+          <span class="badge badge-modulo">3 Módulos</span>
+        </div>
+        <div class="card-profile-stats">
+          <div class="profile-stat">
+            <span class="profile-stat-val">1240</span>
+            <span class="profile-stat-label">XP Total</span>
+          </div>
+          <div class="profile-stat">
+            <span class="profile-stat-val">12</span>
+            <span class="profile-stat-label">Quizzes</span>
+          </div>
+          <div class="profile-stat">
+            <span class="profile-stat-val">86%</span>
+            <span class="profile-stat-label">Acertos</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map card -->
+      <div class="card card-map">
+        <div class="card-map-visual">🗺</div>
+        <div class="card-title">Mapa de Angola</div>
+        <div class="card-body">Explora indicadores económicos por província — Luanda, Benguela, Huíla e mais.</div>
+        <div style="margin-top:14px; position:relative; z-index:1;">
+          <button class="btn btn-outline-gold btn-sm">Abrir Mapa →</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SECTION 7: BADGES & TAGS                    -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">07</span>
+      <h2 class="section-title">Badges & Tags</h2>
+      <span class="section-desc">Módulos · Quiz · Gamificação · Disciplinas</span>
+    </div>
+
+    <div class="badge-grid">
+
+      <div class="badge-row">
+        <span class="badge-row-label">Módulos App</span>
+        <span class="badge badge-modulo">📚 Explorar</span>
+        <span class="badge badge-quiz">🎯 Quiz</span>
+        <span class="badge badge-forum">💬 Fórum</span>
+        <span class="badge badge-novo">✦ NOVO</span>
+        <span class="badge badge-destaque">⭐ Destaque</span>
+      </div>
+
+      <div class="badge-row">
+        <span class="badge-row-label">Resultado Quiz</span>
+        <span class="badge badge-acertou"><span class="badge-dot" style="background:var(--success);"></span>Correcto</span>
+        <span class="badge badge-errou"><span class="badge-dot" style="background:var(--angola-red);"></span>Errado</span>
+        <span class="badge badge-parcial"><span class="badge-dot" style="background:var(--warning);"></span>Parcial</span>
+        <span class="badge" style="background:var(--info-bg); color:var(--info); border-color:rgba(29,111,164,0.25);">⏭ Saltado</span>
+      </div>
+
+      <div class="badge-row">
+        <span class="badge-row-label">Gamificação</span>
+        <span class="xp-badge">+50 XP</span>
+        <span class="xp-badge">+10 XP</span>
+        <span class="level-badge">7</span>
+        <span class="badge" style="background:#FFF8E1; color:#8B6900; border-color:rgba(212,168,0,0.30);">🏆 Estudante Destaque</span>
+        <span class="badge" style="background:rgba(204,9,47,0.08); color:var(--angola-red); border-color:rgba(204,9,47,0.20);">🔥 Sequência 7 dias</span>
+        <span class="badge" style="background:rgba(0,0,0,0.06); color:var(--grafite); border-color:rgba(0,0,0,0.15);">🥇 Top Luanda</span>
+      </div>
+
+      <div class="badge-row">
+        <span class="badge-row-label">Disciplinas</span>
+        <span class="tag tag-economia">economia</span>
+        <span class="tag tag-historia">história</span>
+        <span class="tag tag-geografia">geografia</span>
+        <span class="tag tag-cidadania">cidadania</span>
+        <span class="tag tag-angola">angola</span>
+      </div>
+
+      <div class="badge-row">
+        <span class="badge-row-label">Conteúdo</span>
+        <span class="badge" style="background:#F5F0FF; color:#6B21A8; border-color:rgba(107,33,168,0.20);">🎬 Vídeo</span>
+        <span class="badge" style="background:#FFF0F5; color:#9B0723; border-color:rgba(204,9,47,0.20);">🎙 Podcast</span>
+        <span class="badge" style="background:#F0F5FF; color:#1E40AF; border-color:rgba(30,64,175,0.20);">📄 Texto</span>
+        <span class="badge" style="background:#F0FFF5; color:#0E6638; border-color:rgba(26,158,92,0.20);">🎮 Interactivo</span>
+      </div>
+
+      <div class="badge-row">
+        <span class="badge-row-label">Estado Online</span>
+        <span class="status-indicator">
+          <span class="status-dot status-online"></span>
+          <span style="font-size:12px; color:var(--cinza-text);">Online</span>
+        </span>
+        <span class="status-indicator">
+          <span class="status-dot status-away"></span>
+          <span style="font-size:12px; color:var(--cinza-text);">Ausente</span>
+        </span>
+        <span class="status-indicator">
+          <span class="status-dot status-offline"></span>
+          <span style="font-size:12px; color:var(--cinza-muted);">Offline</span>
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SECTION 8: PROGRESSO & GRÁFICOS             -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">08</span>
+      <h2 class="section-title">Progresso & Indicadores</h2>
+      <span class="section-desc">Barras · XP · Gráfico de barras financeiro</span>
+    </div>
+
+    <div class="row">
+      <div style="flex:1; min-width:280px;">
+        <div class="subsection-title">Barras de Progresso</div>
+        <div class="progress-demos">
+
+          <div class="progress-wrap">
+            <div class="progress-header">
+              <span>Módulo: Inflação em Angola</span>
+              <span class="progress-pct">75%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill progress-fill-red" style="width:75%;"></div>
+            </div>
+          </div>
+
+          <div class="progress-wrap">
+            <div class="progress-header">
+              <span>Desempenho no Quiz</span>
+              <span class="progress-pct">87%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill progress-fill-gold" style="width:87%;"></div>
+            </div>
+          </div>
+
+          <div class="progress-wrap">
+            <div class="progress-header">
+              <span>Módulos Concluídos</span>
+              <span class="progress-pct">3 / 8</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill progress-fill-success" style="width:37%;"></div>
+            </div>
+          </div>
+
+          <div class="progress-wrap">
+            <div class="progress-header">
+              <span style="font-weight:600;">🎯 Barra de XP — Nível 7</span>
+              <span class="progress-pct">1240 / 1500 XP</span>
+            </div>
+            <div class="progress-xp">
+              <div class="progress-xp-fill" style="width:83%;"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div style="flex:1; min-width:280px;">
+        <div class="subsection-title">Gráfico — Taxa de Inflação Angola (%)</div>
+        <div style="padding:20px; background:var(--angola-black); border-radius:var(--r-xl); position:relative; overflow:hidden;">
+          <div style="position:absolute;inset:0;background:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cg fill='none' stroke='%23FFCC00' stroke-width='0.4' opacity='0.05'%3E%3Cline x1='0' y1='0' x2='40' y2='40'/%3E%3Cline x1='40' y1='0' x2='0' y2='40'/%3E%3C/g%3E%3C/svg%3E");pointer-events:none;"></div>
+          <div style="position:relative;z-index:1;">
+            <div style="font-family:var(--font-mono); font-size:9px; color:rgba(255,204,0,0.50); text-transform:uppercase; letter-spacing:0.12em; margin-bottom:16px;">Inflação anual (%) · 2018–2024</div>
+            <div class="bar-chart">
+              <div class="bar-group">
+                <div class="bar-val" style="color:rgba(255,255,255,0.60);">19.6</div>
+                <div class="bar" style="height:70px; background:linear-gradient(to top, var(--angola-red-dark), var(--angola-red));"></div>
+                <div class="bar-label" style="color:rgba(255,255,255,0.35);">2018</div>
+              </div>
+              <div class="bar-group">
+                <div class="bar-val" style="color:rgba(255,255,255,0.60);">17.1</div>
+                <div class="bar" style="height:60px; background:linear-gradient(to top, var(--angola-red-dark), var(--angola-red));"></div>
+                <div class="bar-label" style="color:rgba(255,255,255,0.35);">2019</div>
+              </div>
+              <div class="bar-group">
+                <div class="bar-val" style="color:rgba(255,255,255,0.60);">22.3</div>
+                <div class="bar" style="height:80px; background:linear-gradient(to top, var(--angola-red-dark), var(--angola-red));"></div>
+                <div class="bar-label" style="color:rgba(255,255,255,0.35);">2020</div>
+              </div>
+              <div class="bar-group">
+                <div class="bar-val" style="color:rgba(255,255,255,0.60);">25.8</div>
+                <div class="bar" style="height:92px; background:linear-gradient(to top, #7A0019, var(--angola-red));"></div>
+                <div class="bar-label" style="color:rgba(255,255,255,0.35);">2021</div>
+              </div>
+              <div class="bar-group">
+                <div class="bar-val" style="color:rgba(255,255,255,0.60);">21.4</div>
+                <div class="bar" style="height:76px; background:linear-gradient(to top, var(--angola-red-dark), var(--angola-red));"></div>
+                <div class="bar-label" style="color:rgba(255,255,255,0.35);">2022</div>
+              </div>
+              <div class="bar-group">
+                <div class="bar-val" style="color:var(--angola-gold);">13.6</div>
+                <div class="bar" style="height:48px; background:linear-gradient(to top, var(--angola-gold-dark), var(--angola-gold));"></div>
+                <div class="bar-label" style="color:var(--angola-gold); font-weight:600;">2023</div>
+              </div>
+              <div class="bar-group">
+                <div class="bar-val" style="color:rgba(255,255,255,0.35);">~11</div>
+                <div class="bar" style="height:38px; background:rgba(255,255,255,0.12); border:1px dashed rgba(255,255,255,0.20);"></div>
+                <div class="bar-label" style="color:rgba(255,255,255,0.25);">2024*</div>
+              </div>
+            </div>
+            <div style="font-size:10px; color:rgba(255,255,255,0.25); margin-top:8px; font-family:var(--font-mono);">* Estimativa · Fonte: BNA / INE Angola</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SECTION 9: ALERTAS & NOTIFICAÇÕES           -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">09</span>
+      <h2 class="section-title">Alertas & Notificações</h2>
+      <span class="section-desc">Estados do sistema · Feedback educativo</span>
+    </div>
+
+    <div class="alert alert-success">
+      <div class="alert-icon">✅</div>
+      <div class="alert-content">
+        <div class="alert-title">Módulo concluído!</div>
+        <div class="alert-body">Completaste "Inflação em Angola" com 87% de acertos. Ganhaste +100 XP e desbloqueaste o próximo módulo.</div>
+      </div>
+    </div>
+    <div class="alert alert-warning">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-content">
+        <div class="alert-title">Progresso Incompleto</div>
+        <div class="alert-body">Tens 2 questões por responder no Quiz de Urbanização. Completa para receber a pontuação completa.</div>
+      </div>
+    </div>
+    <div class="alert alert-error">
+      <div class="alert-icon">❌</div>
+      <div class="alert-content">
+        <div class="alert-title">Resposta incorrecta</div>
+        <div class="alert-body">A reforma monetária de 1999 introduziu o Kwanza Reajustado, não o Novo Kwanza. Revê o módulo para consolidares este conceito.</div>
+      </div>
+    </div>
+    <div class="alert alert-info">
+      <div class="alert-icon">💡</div>
+      <div class="alert-content">
+        <div class="alert-title">Novo conteúdo disponível</div>
+        <div class="alert-body">O módulo "Migração e Urbanização em Luanda" foi adicionado. Explora os novos indicadores regionais e o mapa interactivo.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SECTION 10: ESPAÇAMENTO & RAIOS             -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">10</span>
+      <h2 class="section-title">Espaçamento & Raios</h2>
+      <span class="section-desc">Tokens de layout · Grid system</span>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Espaçamento (Space Tokens)</div>
+      <div class="space-row">
+        <div class="space-chip">
+          <div class="space-block" style="width:4px; height:4px;"></div>
+          <div class="space-token">--sp-1</div>
+          <div class="space-px">4px</div>
+        </div>
+        <div class="space-chip">
+          <div class="space-block" style="width:8px; height:8px;"></div>
+          <div class="space-token">--sp-2</div>
+          <div class="space-px">8px</div>
+        </div>
+        <div class="space-chip">
+          <div class="space-block" style="width:12px; height:12px;"></div>
+          <div class="space-token">--sp-3</div>
+          <div class="space-px">12px</div>
+        </div>
+        <div class="space-chip">
+          <div class="space-block" style="width:16px; height:16px;"></div>
+          <div class="space-token">--sp-4</div>
+          <div class="space-px">16px</div>
+        </div>
+        <div class="space-chip">
+          <div class="space-block" style="width:20px; height:20px;"></div>
+          <div class="space-token">--sp-5</div>
+          <div class="space-px">20px</div>
+        </div>
+        <div class="space-chip">
+          <div class="space-block" style="width:24px; height:24px;"></div>
+          <div class="space-token">--sp-6</div>
+          <div class="space-px">24px</div>
+        </div>
+        <div class="space-chip">
+          <div class="space-block" style="width:32px; height:32px;"></div>
+          <div class="space-token">--sp-8</div>
+          <div class="space-px">32px</div>
+        </div>
+        <div class="space-chip">
+          <div class="space-block" style="width:40px; height:40px;"></div>
+          <div class="space-token">--sp-10</div>
+          <div class="space-px">40px</div>
+        </div>
+        <div class="space-chip">
+          <div class="space-block" style="width:48px; height:48px;"></div>
+          <div class="space-token">--sp-12</div>
+          <div class="space-px">48px</div>
+        </div>
+        <div class="space-chip">
+          <div class="space-block" style="width:64px; height:64px;"></div>
+          <div class="space-token">--sp-16</div>
+          <div class="space-px">64px</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Border Radius</div>
+      <div class="radius-row">
+        <div class="radius-chip">
+          <div class="radius-box" style="border-radius:var(--r-sm);"></div>
+          <div class="space-token">--r-sm</div>
+          <div class="space-px">4px</div>
+        </div>
+        <div class="radius-chip">
+          <div class="radius-box" style="border-radius:var(--r-md);"></div>
+          <div class="space-token">--r-md</div>
+          <div class="space-px">8px</div>
+        </div>
+        <div class="radius-chip">
+          <div class="radius-box" style="border-radius:var(--r-lg);"></div>
+          <div class="space-token">--r-lg</div>
+          <div class="space-px">12px</div>
+        </div>
+        <div class="radius-chip">
+          <div class="radius-box" style="border-radius:var(--r-xl);"></div>
+          <div class="space-token">--r-xl</div>
+          <div class="space-px">16px</div>
+        </div>
+        <div class="radius-chip">
+          <div class="radius-box" style="border-radius:var(--r-2xl);"></div>
+          <div class="space-token">--r-2xl</div>
+          <div class="space-px">24px</div>
+        </div>
+        <div class="radius-chip">
+          <div class="radius-box" style="border-radius:var(--r-full); width:56px;"></div>
+          <div class="space-token">--r-full</div>
+          <div class="space-px">9999px</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- SECTION 11: QUICK REFERENCE                 -->
+  <!-- ════════════════════════════════════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">11</span>
+      <h2 class="section-title">Referência Rápida CSS</h2>
+      <span class="section-desc">Variáveis prontas a usar nos componentes</span>
+    </div>
+
+    <table class="tw-table">
+      <thead>
+        <tr>
+          <th>Elemento</th>
+          <th>CSS Variable / Class</th>
+          <th>Quando usar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tw-desc">Título Hero</td>
+          <td><code class="tw-class">font-family: var(--font-display); font-size: 48px; font-weight: 900; color: var(--angola-black);</code></td>
+          <td class="tw-when">Título da App, splash screen</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Título de Secção</td>
+          <td><code class="tw-class">font-family: var(--font-display); font-size: 24px; font-weight: 700;</code></td>
+          <td class="tw-when">Cabeçalhos de módulo, modais</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Corpo de Texto</td>
+          <td><code class="tw-class">font-size: 14px; color: var(--grafite); line-height: 1.6;</code></td>
+          <td class="tw-when">Artigos, descrições, parágrafos</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Botão Principal</td>
+          <td><code class="tw-class">background: var(--angola-red); color: white; box-shadow: 0 2px 8px var(--angola-red-glow);</code></td>
+          <td class="tw-when">CTA principal, submeter quiz</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Botão Ouro</td>
+          <td><code class="tw-class">background: var(--angola-gold); color: var(--angola-black);</code></td>
+          <td class="tw-when">Acções premium, ranking</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Input Focus</td>
+          <td><code class="tw-class">border-color: var(--angola-red); box-shadow: var(--shadow-red);</code></td>
+          <td class="tw-when">Todos os campos de formulário</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Card Padrão</td>
+          <td><code class="tw-class">background: var(--branco); border: 1px solid var(--cinza-border); border-radius: var(--r-xl);</code></td>
+          <td class="tw-when">Módulos, artigos, formulários</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Card de Quiz</td>
+          <td><code class="tw-class">background: var(--angola-black); color: white; + Tchokwe SVG overlay;</code></td>
+          <td class="tw-when">Ecrã de quiz, resultados</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Fundo de Página</td>
+          <td><code class="tw-class">background-color: #F5F0EA; + Digital texture SVG 8%;</code></td>
+          <td class="tw-when">Todas as páginas da app</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Navbar / Header</td>
+          <td><code class="tw-class">background: var(--angola-black); border-bottom: 2px solid var(--angola-red);</code></td>
+          <td class="tw-when">Barra de navegação superior</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Barra de XP</td>
+          <td><code class="tw-class">background: linear-gradient(90deg, var(--angola-gold-dark), var(--angola-gold));</code></td>
+          <td class="tw-when">Perfil do utilizador, gamificação</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Badge Módulo</td>
+          <td><code class="tw-class">background: var(--angola-red-muted); color: var(--angola-red); border-radius: var(--r-full);</code></td>
+          <td class="tw-when">Tags de tipo de conteúdo</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Sucesso</td>
+          <td><code class="tw-class">color: var(--success); background: var(--success-bg);</code></td>
+          <td class="tw-when">Quiz correcto, módulo concluído</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Erro</td>
+          <td><code class="tw-class">color: var(--angola-red); background: var(--danger-bg);</code></td>
+          <td class="tw-when">Quiz errado, validação de form</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Avatar Utilizador</td>
+          <td><code class="tw-class">background: var(--angola-red); border: 3px solid var(--angola-gold); border-radius: 50%;</code></td>
+          <td class="tw-when">Perfil, fórum, comentários</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Divider</td>
+          <td><code class="tw-class">border-top: 1px solid var(--cinza-corp); margin: var(--sp-4) 0;</code></td>
+          <td class="tw-when">Separar secções dentro de cards</td>
+        </tr>
+        <tr>
+          <td class="tw-desc">Texto Muted</td>
+          <td><code class="tw-class">color: var(--cinza-muted); font-size: 11px;</code></td>
+          <td class="tw-when">Timestamps, metadados, helper</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="brand">Economia com História · <span class="red">Angola</span></div>
+    <p>Design System v1.0 · 2025 · Aplicação Educativa</p>
+    <p>
+      <span class="gold">Playfair Display</span> + Inter + JetBrains Mono
+      <span class="dot-sep">·</span>
+      <span class="red">#CC092F</span> Vermelho Angola
+      <span class="dot-sep">·</span>
+      <span class="gold">#FFCC00</span> Amarelo Dourado
+      <span class="dot-sep">·</span>
+      #1A1008 Preto Angola
+    </p>
+    <p style="margin-top:8px; font-size:11px; color:var(--cinza-muted);">
+      Texturas inspiradas na arte Tchokwe · Pano de Ambaca · Padrões Kongo · Cestaria Ovimbundu
+    </p>
+  </footer>
+
+</div>
+</body>
+</html>

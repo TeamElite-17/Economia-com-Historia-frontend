@@ -1,0 +1,73 @@
+@import './fonts.css';
+
+:root {
+  --angola-red:        #CC092F;
+  --angola-red-dark:   #A00722;
+  --angola-red-light:  #E8204A;
+  --angola-red-muted:  rgba(204,9,47,0.10);
+  --angola-red-glow:   rgba(204,9,47,0.25);
+
+  --angola-black:      #1A1008;
+  --angola-black-soft: #231608;
+
+  --angola-gold:       #FFCC00;
+  --angola-gold-dark:  #D4A800;
+  --angola-gold-light: #FFE066;
+  --angola-gold-muted: rgba(255,204,0,0.12);
+  --angola-gold-glow:  rgba(255,204,0,0.30);
+
+  --grafite:      #2C2018;
+  --grafite-mid:  #3A2C1C;
+  --grafite-soft: #4A3828;
+
+  --cinza-corp:   #E6E6E6;
+  --cinza-light:  #F2F2F2;
+  --cinza-border: #D0D0D0;
+  --cinza-muted:  #999999;
+  --cinza-text:   #666666;
+
+  --branco:       #FFFFFF;
+  --branco-warm:  #FAFAFA;
+
+  --success:    #1A9E5C;
+  --success-bg: #E8F5EE;
+  --warning:    #D97706;
+  --warning-bg: #FEF3C7;
+  --info:       #1D6FA4;
+  --info-bg:    #DBEAFE;
+  --danger:     #CC092F;
+  --danger-bg:  rgba(204,9,47,0.08);
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Inter', -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.12);
+  --shadow-md:  0 4px 12px rgba(0,0,0,0.15);
+  --shadow-lg:  0 8px 24px rgba(0,0,0,0.18);
+  --shadow-red: 0 0 0 3px rgba(204,9,47,0.25);
+  --shadow-gold: 0 0 0 3px rgba(255,204,0,0.30);
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: #F5F0EA;
+}
+
+.angola-pattern-bg {
+  background-color: #F5F0EA;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='%23F5F0EA'/%3E%3Cg fill='none' stroke='%23CC092F' stroke-width='0.5' opacity='0.10'%3E%3Crect x='5' y='5' width='20' height='20' rx='1'/%3E%3Crect x='35' y='5' width='20' height='20' rx='1'/%3E%3Crect x='5' y='35' width='20' height='20' rx='1'/%3E%3Crect x='35' y='35' width='20' height='20' rx='1'/%3E%3Cline x1='15' y1='5' x2='15' y2='25'/%3E%3Cline x1='5' y1='15' x2='25' y2='15'/%3E%3Cline x1='45' y1='5' x2='45' y2='25'/%3E%3Cline x1='35' y1='15' x2='55' y2='15'/%3E%3Cline x1='15' y1='35' x2='15' y2='55'/%3E%3Cline x1='5' y1='45' x2='25' y2='45'/%3E%3Cline x1='45' y1='35' x2='45' y2='55'/%3E%3Cline x1='35' y1='45' x2='55' y2='45'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.dark-pattern-bg {
+  background-color: var(--angola-black);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cg fill='none' stroke='%23FFCC00' stroke-width='0.7' opacity='0.08'%3E%3Crect x='10' y='10' width='20' height='20'/%3E%3Crect x='50' y='10' width='20' height='20'/%3E%3Crect x='10' y='50' width='20' height='20'/%3E%3Crect x='50' y='50' width='20' height='20'/%3E%3Cline x1='20' y1='10' x2='20' y2='30'/%3E%3Cline x1='10' y1='20' x2='30' y2='20'/%3E%3Cline x1='60' y1='10' x2='60' y2='30'/%3E%3Cline x1='50' y1='20' x2='70' y2='20'/%3E%3Cline x1='20' y1='50' x2='20' y2='70'/%3E%3Cline x1='10' y1='60' x2='30' y2='60'/%3E%3Cline x1='60' y1='50' x2='60' y2='70'/%3E%3Cline x1='50' y1='60' x2='70' y2='60'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.font-display { font-family: var(--font-display); }
+.font-mono    { font-family: var(--font-mono); }
+
+/* Scrollbar customization */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cinza-light); }
+::-webkit-scrollbar-thumb { background: var(--angola-red); border-radius: 3px; }
