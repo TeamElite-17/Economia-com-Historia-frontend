@@ -1,11 +1,72 @@
+import { useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { Bell, BellOff, Lock, Users, Play, FileText, Headphones } from 'lucide-react';
+import { Bell, BellOff, Lock, Users, Play, FileText, Headphones, Check } from 'lucide-react';
 import { AUTHORS, CONTENT_ITEMS, formatViews } from '../data/mockData';
 import { ContentCard } from '../components/ui/ContentCard';
 import { useAuth } from '../context/AuthContext';
 
+/** Dropdown de preferência de notificação — reutilizável por cada card */
+function NotifDropdown({
+  authorId, pref, onChange,
+}: { authorId: string; pref: 'ALL' | 'NONE'; onChange: (p: 'ALL' | 'NONE') => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Fechar ao clicar fora
+  const onBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+    if (!ref.current?.contains(e.relatedTarget as Node)) setOpen(false);
+  };
+
+  const options: { value: 'ALL' | 'NONE'; label: string; desc: string }[] = [
+    { value: 'ALL', label: 'Todas', desc: 'Receber todas as notificações' },
+    { value: 'NONE', label: 'Nenhuma', desc: 'Não receber notificações' },
+  ];
+
+  return (
+    <div className="relative" ref={ref} onBlur={onBlur} tabIndex={-1}>
+      <button
+        onClick={() => setOpen(v => !v)}
+        className="flex items-center justify-center w-8 h-8 rounded-full transition-all hover:bg-gray-200"
+        style={{ backgroundColor: '#E5E7EB', color: '#374151' }}
+        title="Gerir notificações"
+      >
+        {pref === 'NONE' ? <BellOff size={14} /> : <Bell size={14} fill="#374151" />}
+      </button>
+      {open && (
+        <div
+          className="absolute right-0 top-10 z-50 bg-white rounded-2xl shadow-xl border overflow-hidden"
+          style={{ minWidth: 210, borderColor: 'rgba(0,0,0,0.08)' }}
+        >
+          <div className="px-4 py-2.5 border-b" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Notificações</p>
+          </div>
+          {options.map(opt => {
+            const active = pref === opt.value;
+            return (
+              <button
+                key={opt.value}
+                onClick={() => { onChange(opt.value); setOpen(false); }}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors"
+              >
+                <span style={{ color: active ? '#7B1D2D' : '#9CA3AF' }}>
+                  {opt.value === 'ALL' ? <Bell size={14} /> : <BellOff size={14} />}
+                </span>
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-gray-800">{opt.label}</div>
+                  <div className="text-xs text-gray-400">{opt.desc}</div>
+                </div>
+                {active && <Check size={13} style={{ color: '#7B1D2D' }} />}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function SubscriptionsPage() {
-  const { isLoggedIn, user, openLogin, unsubscribeFromAuthor } = useAuth();
+  const { isLoggedIn, user, openLogin, unsubscribeFromAuthor, getSubscriptionNotifPref, setSubscriptionNotifPref } = useAuth();
 
   if (!isLoggedIn) {
     return (
@@ -62,30 +123,42 @@ export function SubscriptionsPage() {
           <section className="mb-8">
             <h2 className="font-semibold text-gray-900 mb-4">Autores que segues</h2>
             <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-none">
-              {subscribedAuthors.map(author => (
-                <div key={author.id} className="flex-shrink-0 bg-white rounded-2xl p-4 w-52 shadow-sm">
-                  <div className="text-center mb-3">
-                    <img
-                      src={author.avatar}
-                      alt={author.name}
-                      className="w-14 h-14 rounded-full object-cover mx-auto mb-2 border-2"
-                      style={{ borderColor: '#F5E8EB' }}
-                    />
-                    <div className="font-semibold text-sm text-gray-900 leading-tight">{author.name}</div>
-                    <div className="text-xs text-gray-500 mt-0.5">{author.specialty}</div>
-                    <div className="text-xs text-gray-400 mt-0.5 flex items-center justify-center gap-1">
-                      <Users size={10} /> {formatViews(author.subscribers)} subscritores
+              {subscribedAuthors.map(author => {
+                const pref = getSubscriptionNotifPref(author.id);
+                return (
+                  <div key={author.id} className="flex-shrink-0 bg-white rounded-2xl p-4 w-56 shadow-sm">
+                    <div className="text-center mb-3">
+                      <img
+                        src={author.avatar}
+                        alt={author.name}
+                        className="w-14 h-14 rounded-full object-cover mx-auto mb-2 border-2"
+                        style={{ borderColor: '#F5E8EB' }}
+                      />
+                      <div className="font-semibold text-sm text-gray-900 leading-tight">{author.name}</div>
+                      <div className="text-xs text-gray-500 mt-0.5">{author.specialty}</div>
+                      <div className="text-xs text-gray-400 mt-0.5 flex items-center justify-center gap-1">
+                        <Users size={10} /> {formatViews(author.subscribers)} subscritores
+                      </div>
+                    </div>
+                    {/* Ações: Subscrito + sino */}
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => unsubscribeFromAuthor(author.id)}
+                        className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition-all hover:bg-gray-200"
+                        style={{ backgroundColor: '#E5E7EB', color: '#374151' }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        Subscrito
+                      </button>
+                      <NotifDropdown
+                        authorId={author.id}
+                        pref={pref}
+                        onChange={(p) => setSubscriptionNotifPref(author.id, p)}
+                      />
                     </div>
                   </div>
-                  <button
-                    onClick={() => unsubscribeFromAuthor(author.id)}
-                    className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-medium transition-all"
-                    style={{ backgroundColor: '#F5E8EB', color: '#7B1D2D' }}
-                  >
-                    <BellOff size={12} /> Cancelar
-                  </button>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
 

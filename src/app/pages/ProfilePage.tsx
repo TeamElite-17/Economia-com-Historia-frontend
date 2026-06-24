@@ -83,7 +83,7 @@ export function ProfilePage() {
               <div className="flex items-center gap-3 text-sm text-gray-500 mt-1 flex-wrap">
                 <span className="flex items-center gap-1 whitespace-nowrap"><MapPin size={13} /> {user?.province || 'Angola'}</span>
                 <span className="flex items-center gap-1 whitespace-nowrap"><Calendar size={13} /> Desde {formatDate(user?.joinedAt || '')}</span>
-                {user?.role === 'admin' && (
+                {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
                   <span className="px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" style={{ backgroundColor: '#F5E8EB', color: '#7B1D2D' }}>
                     Administrador
                   </span>

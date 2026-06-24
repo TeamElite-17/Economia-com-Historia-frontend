@@ -75,7 +75,7 @@ export function QuizDetailPage() {
       setSelected(null);
       setShowExplanation(false);
     } else {
-      completeQuiz(quiz.id);
+      completeQuiz(quiz.id, percentage);
       setPhase('result');
     }
   };

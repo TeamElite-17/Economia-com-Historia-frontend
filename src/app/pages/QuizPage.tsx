@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { HelpCircle, Clock, Users, Lock, ChevronRight, Award, Trophy, Medal, Star } from 'lucide-react';
-import { QUIZZES, CATEGORIES, RANKING, MOCK_USERS, formatViews } from '../data/mockData';
+import { QUIZZES, CATEGORIES, formatViews } from '../data/mockData';
 import { useAuth } from '../context/AuthContext';
 
 const DIFFICULTY_CONFIG = {
@@ -17,6 +17,15 @@ const BADGE_CONFIG = {
   participante: { label: 'Participante', color: '#7B1D2D', bg: '#F5E8EB', icon: Star },
 };
 
+// Entrada do ranking carregada do backend
+interface RankingEntry {
+  userId: string;
+  userName: string;
+  userAvatar: string;
+  points: number;
+  quizzesCompleted: number;
+}
+
 type PageTab = 'quizzes' | 'ranking';
 
 export function QuizPage() {
@@ -24,6 +33,20 @@ export function QuizPage() {
   const [activeCategory, setActiveCategory] = useState('Todos');
   const [activeDifficulty, setActiveDifficulty] = useState('all');
   const [activeTab, setActiveTab] = useState<PageTab>('quizzes');
+  const [rankingData, setRankingData] = useState<RankingEntry[]>([]);
+  const [rankingLoading, setRankingLoading] = useState(false);
+
+  // Carrega ranking quando o utilizador muda para o separador
+  useEffect(() => {
+    if (activeTab !== 'ranking') return;
+    const backendUrl = (import.meta.env.VITE_API_BASE_URL ?? '/api').replace(/\/$/, '');
+    setRankingLoading(true);
+    fetch(`${backendUrl}/v1/quiz-attempts/ranking`)
+      .then(r => r.json())
+      .then((data: RankingEntry[]) => setRankingData(Array.isArray(data) ? data : []))
+      .catch(() => setRankingData([]))
+      .finally(() => setRankingLoading(false));
+  }, [activeTab]);
 
   const filtered = QUIZZES.filter(q => {
     if (activeCategory !== 'Todos' && q.category !== activeCategory) return false;
@@ -31,8 +54,7 @@ export function QuizPage() {
     return true;
   });
 
-  const sortedRanking = [...RANKING].sort((a, b) => b.points - a.points);
-  const currentUserRank = sortedRanking.findIndex(r => r.userId === user?.id) + 1;
+  const currentUserRank = rankingData.findIndex(r => r.userId === user?.id) + 1;
 
   return (
     <div className="px-4 md:px-8 py-6 max-w-6xl mx-auto">
@@ -221,8 +243,8 @@ export function QuizPage() {
               <div className="flex-1 min-w-0">
                 <div className="text-white font-semibold text-sm">A tua posição no ranking</div>
                 <div className="text-white/70 text-xs mt-0.5">
-                  {RANKING.find(r => r.userId === user?.id)?.points || 0} pontos ·{' '}
-                  {RANKING.find(r => r.userId === user?.id)?.quizzesCompleted || 0} quizzes completos
+                  {rankingData.find(r => r.userId === user?.id)?.points || 0} pontos ·{' '}
+                  {rankingData.find(r => r.userId === user?.id)?.quizzesCompleted || 0} quizzes completos
                 </div>
               </div>
               <img
@@ -259,69 +281,75 @@ export function QuizPage() {
               <h3 className="font-semibold text-gray-900 text-sm">Tabela de Classificação</h3>
             </div>
             <div className="divide-y" style={{ borderColor: 'rgba(123,29,45,0.06)' }}>
-              {sortedRanking.map((entry, index) => {
-                const rankUser = MOCK_USERS.find(u => u.id === entry.userId);
-                const badge = BADGE_CONFIG[entry.badge];
-                const BadgeIcon = badge.icon;
-                const isCurrentUser = user?.id === entry.userId;
-                return (
-                  <div
-                    key={entry.userId}
-                    className="flex items-center gap-4 px-5 py-4 transition-colors"
-                    style={isCurrentUser ? { backgroundColor: '#F5E8EB' } : {}}
-                  >
-                    {/* Rank number */}
-                    <div className="w-7 text-center flex-shrink-0">
-                      {index === 0 ? (
-                        <Trophy size={20} style={{ color: '#C9A84C' }} />
-                      ) : index === 1 ? (
-                        <Medal size={20} style={{ color: '#9CA3AF' }} />
-                      ) : index === 2 ? (
-                        <Medal size={20} style={{ color: '#A05C38' }} />
-                      ) : (
-                        <span className="text-sm font-semibold text-gray-400">#{index + 1}</span>
-                      )}
-                    </div>
-
-                    {/* Avatar */}
-                    <img
-                      src={rankUser?.avatar}
-                      alt={rankUser?.name}
-                      className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                    />
-
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-sm text-gray-900 truncate">{rankUser?.name}</span>
-                        {isCurrentUser && (
-                          <span className="text-xs px-1.5 py-0.5 rounded-full text-white flex-shrink-0" style={{ backgroundColor: '#7B1D2D' }}>
-                            Tu
-                          </span>
+              {rankingLoading ? (
+                <div className="p-8 text-center">
+                  <div className="animate-spin w-6 h-6 border-2 border-gray-200 rounded-full mx-auto" style={{ borderTopColor: '#7B1D2D' }} />
+                  <p className="text-xs text-gray-400 mt-2">A carregar ranking...</p>
+                </div>
+              ) : rankingData.length === 0 ? (
+                <div className="p-8 text-center">
+                  <Trophy size={28} className="mx-auto mb-2 opacity-20" />
+                  <p className="text-sm text-gray-400">Ainda não há dados de ranking.</p>
+                  <p className="text-xs text-gray-400 mt-1">Completa quizzes para aparecer aqui!</p>
+                </div>
+              ) : (
+                rankingData.map((entry, index) => {
+                  const badge = index === 0 ? BADGE_CONFIG.ouro
+                    : index === 1 ? BADGE_CONFIG.prata
+                    : index === 2 ? BADGE_CONFIG.bronze
+                    : BADGE_CONFIG.participante;
+                  const BadgeIcon = badge.icon;
+                  const isCurrentUser = user?.id === entry.userId;
+                  return (
+                    <div
+                      key={entry.userId}
+                      className="flex items-center gap-4 px-5 py-4 transition-colors"
+                      style={isCurrentUser ? { backgroundColor: '#F5E8EB' } : {}}
+                    >
+                      <div className="w-7 text-center flex-shrink-0">
+                        {index === 0 ? (
+                          <Trophy size={20} style={{ color: '#C9A84C' }} />
+                        ) : index === 1 ? (
+                          <Medal size={20} style={{ color: '#9CA3AF' }} />
+                        ) : index === 2 ? (
+                          <Medal size={20} style={{ color: '#A05C38' }} />
+                        ) : (
+                          <span className="text-sm font-semibold text-gray-400">#{index + 1}</span>
                         )}
                       </div>
-                      <div className="flex items-center gap-3 text-xs text-gray-400 mt-0.5">
-                        <span>{entry.quizzesCompleted} quizzes</span>
-                        <span>{entry.forumReplies} respostas</span>
-                        <span>{rankUser?.province}</span>
+                      <img
+                        src={entry.userAvatar}
+                        alt={entry.userName}
+                        className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-sm text-gray-900 truncate">{entry.userName}</span>
+                          {isCurrentUser && (
+                            <span className="text-xs px-1.5 py-0.5 rounded-full text-white flex-shrink-0" style={{ backgroundColor: '#7B1D2D' }}>
+                              Tu
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-xs text-gray-400 mt-0.5">
+                          {entry.quizzesCompleted} quiz{entry.quizzesCompleted !== 1 ? 'zes' : ''} completo{entry.quizzesCompleted !== 1 ? 's' : ''}
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                        <span
+                          className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
+                          style={{ backgroundColor: badge.bg, color: badge.color }}
+                        >
+                          <BadgeIcon size={10} /> {badge.label}
+                        </span>
+                        <span className="font-bold text-sm" style={{ color: '#7B1D2D' }}>
+                          {entry.points.toLocaleString()} pts
+                        </span>
                       </div>
                     </div>
-
-                    {/* Badge + points */}
-                    <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                      <span
-                        className="flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
-                        style={{ backgroundColor: badge.bg, color: badge.color }}
-                      >
-                        <BadgeIcon size={10} /> {badge.label}
-                      </span>
-                      <span className="font-bold text-sm" style={{ color: '#7B1D2D' }}>
-                        {entry.points.toLocaleString()} pts
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           </div>
 

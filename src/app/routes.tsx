@@ -10,6 +10,9 @@ import { ForumThreadPage } from './pages/ForumThreadPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { SubscriptionsPage } from './pages/SubscriptionsPage';
 import { AdminPage } from './pages/AdminPage';
+import { PublishPage } from './pages/PublishPage';
+import { RevisorPage } from './pages/RevisorPage';
+import { AprovadorPage } from './pages/AprovadorPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 export const router = createBrowserRouter([
@@ -26,7 +29,11 @@ export const router = createBrowserRouter([
       { path: 'forum/:id', Component: ForumThreadPage },
       { path: 'perfil', Component: ProfilePage },
       { path: 'subscricoes', Component: SubscriptionsPage },
-      { path: 'admin', Component: AdminPage },
+      { path: 'publicar', Component: PublishPage },
+      // Role-specific dashboards
+      { path: 'admin', Component: AdminPage },         // ADMIN e SUPERADMIN (CMS)
+      { path: 'revisor', Component: RevisorPage },     // REVISOR (revê conteúdos pendentes)
+      { path: 'aprovador', Component: AprovadorPage }, // APROVADOR (publica conteúdos revistos)
       { path: '*', Component: NotFoundPage },
     ],
   },

@@ -1,34 +1,68 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router';
 import {
   Search, Menu, X, Bell, User, LogOut, Settings, Shield, ChevronDown, BookOpen,
-  Flame, HelpCircle, MessageSquare, Bookmark, Clock
+  MessageSquare, Bookmark, Clock, CheckCheck
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { CONTENT_ITEMS } from '../../data/mockData';
+import { requestJson } from '../../data/backendApi';
 
 interface HeaderProps {
   onMenuToggle: () => void;
   sidebarOpen: boolean;
 }
 
+interface Notif { notificationId: string; message: string; read: boolean; createdAt?: string; }
+
 export function Header({ onMenuToggle, sidebarOpen }: HeaderProps) {
-  const { user, isLoggedIn, isAdmin, openLogin, openRegister, logout } = useAuth();
+  const { user, isLoggedIn, isAdmin, isSuperAdmin, isStaff, canPublish, userRole, openLogin, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
+  const [notifications, setNotifications] = useState<Notif[]>([]);
+  const [notifError, setNotifError] = useState('');
+  const [notifLoading, setNotifLoading] = useState(false);
   const navigate = useNavigate();
   const searchRef = useRef<HTMLDivElement>(null);
 
-  // Mock notifications
-  const notifications = [
-    { id: '1', title: 'Novo conteúdo Jindungo', desc: 'Prof. Domingos publicou um novo vídeo sobre inflação', time: 'há 2h', unread: true, icon: Flame, iconColor: '#D64E12' },
-    { id: '2', title: 'Quiz completado!', desc: 'Ganhas-te o badge Prata ao completar 2 quizzes', time: 'há 1 dia', unread: true, icon: HelpCircle, iconColor: '#C9A84C' },
-    { id: '3', title: 'Resposta no fórum', desc: 'Carlos respondeu ao teu tópico sobre musseques', time: 'há 2 dias', unread: false, icon: MessageSquare, iconColor: '#5C8A6E' },
-  ];
+  const unreadCount = notifications.filter(n => !n.read).length;
 
-  const unreadCount = isLoggedIn ? notifications.filter(n => n.unread).length : 0;
+  const fetchNotifications = useCallback(async () => {
+    if (!isLoggedIn) return;
+    setNotifLoading(true);
+    try {
+      const data = await requestJson<Notif[]>('/v1/notifications/my');
+      setNotifications(Array.isArray(data) ? data : []);
+      setNotifError('');
+    } catch (err) {
+      console.error('[Notifications] fetch error:', err);
+      setNotifError(String(err));
+    } finally {
+      setNotifLoading(false);
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (isLoggedIn) void fetchNotifications();
+    const interval = isLoggedIn ? setInterval(fetchNotifications, 30000) : undefined;
+    return () => { if (interval) clearInterval(interval); };
+  }, [isLoggedIn, fetchNotifications]);
+
+  const markAsRead = async (notificationId: string) => {
+    try {
+      await requestJson(`/v1/notifications/${notificationId}/read`, { method: 'PATCH' });
+      setNotifications(prev => prev.map(n => n.notificationId === notificationId ? { ...n, read: true } : n));
+    } catch { /* ignore */ }
+  };
+
+  const markAllRead = async () => {
+    try {
+      await requestJson('/v1/notifications/my/read-all', { method: 'PATCH' });
+      setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    } catch { /* ignore */ }
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,7 +206,12 @@ export function Header({ onMenuToggle, sidebarOpen }: HeaderProps) {
             {/* Notifications */}
             <div className="relative">
               <button
-                onClick={() => { setNotifOpen(!notifOpen); setUserMenuOpen(false); }}
+                onClick={() => {
+                  const next = !notifOpen;
+                  setNotifOpen(next);
+                  setUserMenuOpen(false);
+                  if (next) void fetchNotifications(); // actualiza ao abrir
+                }}
                 className="p-2 rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-colors relative"
                 aria-label="Notificações"
               >
@@ -194,35 +233,48 @@ export function Header({ onMenuToggle, sidebarOpen }: HeaderProps) {
                       <span className="font-semibold text-sm text-gray-900">Notificações</span>
                       <span className="text-xs text-gray-400">{unreadCount} não lidas</span>
                     </div>
-                    <div className="divide-y divide-gray-50">
-                      {notifications.map(notif => (
-                        <div
-                          key={notif.id}
-                          className="flex gap-3 px-4 py-3 transition-colors hover:bg-gray-50 cursor-pointer"
-                          style={notif.unread ? { backgroundColor: '#FDFAF8' } : {}}
-                        >
-                          <div
-                            className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-                            style={{ backgroundColor: notif.iconColor + '20' }}
-                          >
-                            <notif.icon size={14} style={{ color: notif.iconColor }} />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-semibold text-gray-900">{notif.title}</p>
-                            <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{notif.desc}</p>
-                            <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
-                              <Clock size={10} /> {notif.time}
-                            </p>
-                          </div>
-                          {notif.unread && (
-                            <div className="w-2 h-2 rounded-full flex-shrink-0 mt-2" style={{ backgroundColor: '#C9A84C' }} />
-                          )}
+                    <div className="divide-y divide-gray-50 max-h-72 overflow-y-auto">
+                      {notifError ? (
+                        <div className="py-6 text-center text-xs text-red-400 px-4">
+                          Erro ao carregar: {notifError}
                         </div>
-                      ))}
+                      ) : notifLoading ? (
+                        <div className="py-8 text-center text-sm text-gray-400">
+                          <div className="w-5 h-5 border-2 rounded-full animate-spin mx-auto mb-2" style={{ borderColor: '#F5E8EB', borderTopColor: '#7B1D2D' }} />
+                          A carregar...
+                        </div>
+                      ) : notifications.length === 0 ? (
+                        <div className="py-8 text-center text-sm text-gray-400">
+                          <Bell size={22} className="mx-auto mb-2 opacity-30" />
+                          Sem notificações
+                        </div>
+                      ) : (
+                        notifications.map(notif => (
+                          <div
+                            key={notif.notificationId}
+                            onClick={() => markAsRead(notif.notificationId)}
+                            className="flex gap-3 px-4 py-3 transition-colors hover:bg-gray-50 cursor-pointer"
+                            style={!notif.read ? { backgroundColor: '#FDFAF8' } : {}}
+                          >
+                            <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: '#F5E8EB' }}>
+                              <MessageSquare size={14} style={{ color: '#7B1D2D' }} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs text-gray-700 leading-relaxed">{notif.message}</p>
+                              <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                                <Clock size={10} /> {notif.createdAt ? new Date(notif.createdAt).toLocaleDateString('pt-PT') : ''}
+                              </p>
+                            </div>
+                            {!notif.read && (
+                              <div className="w-2 h-2 rounded-full flex-shrink-0 mt-2" style={{ backgroundColor: '#C9A84C' }} />
+                            )}
+                          </div>
+                        ))
+                      )}
                     </div>
-                    <div className="px-4 py-2 border-t border-gray-50">
-                      <button className="text-xs font-medium w-full text-center py-1" style={{ color: '#7B1D2D' }}>
-                        Ver todas as notificações
+                    <div className="px-4 py-2 border-t border-gray-50 flex items-center justify-between">
+                      <button onClick={markAllRead} className="text-xs font-medium flex items-center gap-1" style={{ color: '#7B1D2D' }}>
+                        <CheckCheck size={12} /> Marcar todas como lidas
                       </button>
                     </div>
                   </div>
@@ -254,12 +306,19 @@ export function Header({ onMenuToggle, sidebarOpen }: HeaderProps) {
                     <div className="p-3 border-b border-gray-100">
                       <div className="font-semibold text-sm" style={{ color: '#1C1917' }}>{user?.name}</div>
                       <div className="text-xs text-gray-500 truncate">{user?.email}</div>
-                      {isAdmin && (
+                      {isStaff && (
                         <span
-                          className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-xs"
-                          style={{ backgroundColor: '#F5E8EB', color: '#7B1D2D' }}
+                          className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-xs font-medium"
+                          style={
+                            isSuperAdmin ? { backgroundColor: '#F5F3FF', color: '#4C1D95' }
+                            : isAdmin ? { backgroundColor: '#EFF6FF', color: '#1E3A5F' }
+                            : userRole === 'APROVADOR' ? { backgroundColor: '#FFF8E6', color: '#5C3A00' }
+                            : userRole === 'REVISOR' ? { backgroundColor: '#F0F7F4', color: '#1A4A3A' }
+                            : { backgroundColor: '#F5E8EB', color: '#7B1D2D' }
+                          }
                         >
-                          <Shield size={10} /> Admin
+                          <Shield size={10} />
+                          {isSuperAdmin ? 'Super Admin' : isAdmin ? 'Administrador' : userRole === 'APROVADOR' ? 'Aprovador' : userRole === 'REVISOR' ? 'Revisor' : 'Escritor'}
                         </span>
                       )}
                     </div>
@@ -278,6 +337,38 @@ export function Header({ onMenuToggle, sidebarOpen }: HeaderProps) {
                       >
                         <Bookmark size={16} /> Subscrições
                       </Link>
+
+                      {/* ─── Role-specific panel links ─── */}
+                      {canPublish && (
+                        <Link
+                          to="/publicar"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors"
+                          style={{ color: '#2E5C3E' }}
+                        >
+                          <BookOpen size={16} /> Publicar conteúdo
+                        </Link>
+                      )}
+                      {userRole === 'REVISOR' && (
+                        <Link
+                          to="/revisor"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors"
+                          style={{ color: '#1A4A3A' }}
+                        >
+                          <Settings size={16} /> Painel do Revisor
+                        </Link>
+                      )}
+                      {userRole === 'APROVADOR' && (
+                        <Link
+                          to="/aprovador"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors"
+                          style={{ color: '#5C3A00' }}
+                        >
+                          <Settings size={16} /> Painel do Aprovador
+                        </Link>
+                      )}
                       {isAdmin && (
                         <Link
                           to="/admin"
@@ -285,9 +376,11 @@ export function Header({ onMenuToggle, sidebarOpen }: HeaderProps) {
                           className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors"
                           style={{ color: '#7B1D2D' }}
                         >
-                          <Settings size={16} /> Painel Admin
+                          <Shield size={16} /> {isSuperAdmin ? 'Super Admin CMS' : 'Admin CMS'}
                         </Link>
                       )}
+
+
                       <div className="h-px mx-4 my-1 bg-gray-100" />
                       <button
                         onClick={() => { logout(); setUserMenuOpen(false); }}

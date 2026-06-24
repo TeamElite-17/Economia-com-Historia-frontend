@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router';
-import { Home, Compass, Flame, HelpCircle, MessageSquare, Bell, User, Settings, ChevronRight } from 'lucide-react';
+import { Home, Compass, Flame, HelpCircle, MessageSquare, Bell, User, Settings, ChevronRight, BookOpen, Eye, Star, Users, Shield } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 interface SidebarProps {
@@ -21,7 +21,7 @@ const userNavItems = [
 ];
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
-  const { isLoggedIn, isAdmin, openLogin } = useAuth();
+  const { isLoggedIn, isAdmin, isSuperAdmin, isStaff, userRole, canPublish, openLogin } = useAuth();
 
   return (
     <>
@@ -154,6 +154,64 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               )
             ))}
 
+            {canPublish && (
+              <NavLink
+                to="/publicar"
+                onClick={() => window.innerWidth < 768 && onClose()}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-xl mb-0.5 transition-all group relative
+                  ${isActive ? 'text-white font-medium' : 'hover:bg-white'}`
+                }
+                style={({ isActive }) => isActive ? { backgroundColor: '#5C8A6E' } : { color: '#2E5C3E' }}
+              >
+                <BookOpen size={20} className="flex-shrink-0" />
+                <span className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                  Publicar
+                </span>
+              </NavLink>
+            )}
+
+            {/* Role-specific dashboard links */}
+            {userRole === 'REVISOR' && (
+              <NavLink
+                to="/revisor"
+                onClick={() => window.innerWidth < 768 && onClose()}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-xl mb-0.5 transition-all group relative
+                  ${isActive ? 'text-white font-medium' : 'hover:bg-white'}`
+                }
+                style={({ isActive }) => isActive ? { backgroundColor: '#1A4A3A' } : { color: '#1A4A3A' }}
+              >
+                {({ isActive }) => (
+                  <>
+                    <Eye size={20} className="flex-shrink-0" />
+                    <span className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                      Painel Revisor
+                    </span>
+                  </>
+                )}
+              </NavLink>
+            )}
+            {userRole === 'APROVADOR' && (
+              <NavLink
+                to="/aprovador"
+                onClick={() => window.innerWidth < 768 && onClose()}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-xl mb-0.5 transition-all group relative
+                  ${isActive ? 'text-white font-medium' : 'hover:bg-white'}`
+                }
+                style={({ isActive }) => isActive ? { backgroundColor: '#5C3A00' } : { color: '#5C3A00' }}
+              >
+                {({ isActive }) => (
+                  <>
+                    <Star size={20} className="flex-shrink-0" />
+                    <span className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                      Painel Aprovador
+                    </span>
+                  </>
+                )}
+              </NavLink>
+            )}
             {isAdmin && (
               <NavLink
                 to="/admin"
@@ -166,9 +224,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               >
                 {({ isActive }) => (
                   <>
-                    <Settings size={20} className="flex-shrink-0" />
+                    <Shield size={20} className="flex-shrink-0" />
                     <span className={`text-sm whitespace-nowrap transition-opacity duration-200 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                      Admin CMS
+                      {isSuperAdmin ? 'Super Admin CMS' : 'Admin CMS'}
                     </span>
                   </>
                 )}
