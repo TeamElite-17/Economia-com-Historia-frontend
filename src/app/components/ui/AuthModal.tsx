@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { X, Eye, EyeOff, BookOpen, Shield } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router';
@@ -19,10 +19,35 @@ export function AuthModal() {
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isForgotMode, setIsForgotMode] = useState(false);
+  const [forgotMessage, setForgotMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setForgotMessage('');
+    setLoading(true);
+    await new Promise(r => setTimeout(r, 400));
+    
+    if (isForgotMode) {
+      if (!email) { setError('Email é obrigatório.'); setLoading(false); return; }
+      try {
+        const res = await fetch('http://localhost:8080/api/v1/auth/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        if (res.ok) {
+          setForgotMessage('Verifique o seu email para um link de recuperação.');
+        } else {
+          setError('Ocorreu um erro ao tentar recuperar a senha.');
+        }
+      } catch (err) {
+        setError('Erro de ligação ao servidor.');
+      }
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     await new Promise(r => setTimeout(r, 400));
     if (authMode === 'login') {
@@ -61,19 +86,21 @@ export function AuthModal() {
             </div>
           </div>
           <h2 className="text-white text-xl">
-            {authMode === 'login' ? 'Bem-vindo de volta' : 'Criar conta'}
+            {isForgotMode ? 'Recuperar senha' : authMode === 'login' ? 'Bem-vindo de volta' : 'Criar conta'}
           </h2>
           <p className="text-white/70 text-sm mt-1">
-            {authMode === 'login'
-              ? 'Entra para aceder a todas as funcionalidades'
-              : 'Regista-te para começar a aprender'}
+            {isForgotMode 
+              ? 'Insira o seu email para receber o link' 
+              : authMode === 'login'
+                ? 'Entra para aceder a todas as funcionalidades'
+                : 'Regista-te para começar a aprender'}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
 
 
-          {authMode === 'register' && (
+          {!isForgotMode && authMode === 'register' && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Nome completo</label>
               <input
@@ -101,29 +128,38 @@ export function AuthModal() {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Senha</label>
-            <div className="relative">
-              <input
-                type={showPw ? 'text' : 'password'}
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="Insira a sua palavra-passe"
-                required
-                className="w-full px-4 py-2.5 pr-10 rounded-xl border text-sm focus:outline-none focus:ring-2 transition-all"
-                style={{ borderColor: 'rgba(123,29,45,0.2)' }}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPw(!showPw)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
+          {!isForgotMode && (
+            <div>
+              <div className="flex justify-between mb-1">
+                <label className="block text-sm font-medium text-gray-700">Senha</label>
+                {authMode === 'login' && (
+                  <button type="button" onClick={() => setIsForgotMode(true)} className="text-xs text-[#7B1D2D] hover:underline">
+                    Esqueci-me da senha
+                  </button>
+                )}
+              </div>
+              <div className="relative">
+                <input
+                  type={showPw ? 'text' : 'password'}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="Insira a sua palavra-passe"
+                  required
+                  className="w-full px-4 py-2.5 pr-10 rounded-xl border text-sm focus:outline-none focus:ring-2 transition-all"
+                  style={{ borderColor: 'rgba(123,29,45,0.2)' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPw(!showPw)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
-          {authMode === 'register' && (
+          {!isForgotMode && authMode === 'register' && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Província</label>
               <select
@@ -143,6 +179,11 @@ export function AuthModal() {
               {error}
             </div>
           )}
+          {forgotMessage && (
+            <div className="p-3 rounded-xl text-sm text-green-700 bg-green-50 border border-green-200">
+              {forgotMessage}
+            </div>
+          )}
 
           <button
             type="submit"
@@ -150,11 +191,15 @@ export function AuthModal() {
             className="w-full py-3 rounded-xl text-white font-medium text-sm transition-all disabled:opacity-60"
             style={{ backgroundColor: '#7B1D2D' }}
           >
-            {loading ? 'A processar...' : authMode === 'login' ? 'Entrar' : 'Criar conta'}
+            {loading ? 'A processar...' : isForgotMode ? 'Enviar link' : authMode === 'login' ? 'Entrar' : 'Criar conta'}
           </button>
 
           <p className="text-center text-sm text-gray-600">
-            {authMode === 'login' ? (
+            {isForgotMode ? (
+              <button type="button" onClick={() => setIsForgotMode(false)} className="font-medium" style={{ color: '#7B1D2D' }}>
+                Voltar ao login
+              </button>
+            ) : authMode === 'login' ? (
               <>Ainda não tens conta?{' '}
                 <button type="button" onClick={openRegister} className="font-medium" style={{ color: '#7B1D2D' }}>
                   Registar

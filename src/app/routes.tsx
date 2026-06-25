@@ -13,6 +13,7 @@ import { AdminPage } from './pages/AdminPage';
 import { PublishPage } from './pages/PublishPage';
 import { RevisorPage } from './pages/RevisorPage';
 import { AprovadorPage } from './pages/AprovadorPage';
+import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 export const router = createBrowserRouter([
@@ -34,6 +35,7 @@ export const router = createBrowserRouter([
       { path: 'admin', Component: AdminPage },         // ADMIN e SUPERADMIN (CMS)
       { path: 'revisor', Component: RevisorPage },     // REVISOR (revê conteúdos pendentes)
       { path: 'aprovador', Component: AprovadorPage }, // APROVADOR (publica conteúdos revistos)
+      { path: 'reset-password', Component: ResetPasswordPage },
       { path: '*', Component: NotFoundPage },
     ],
   },
