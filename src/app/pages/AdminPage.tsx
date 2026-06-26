@@ -68,7 +68,7 @@ const INITIAL_CONTENT_FORM = {
   description: '',
   type: 'article' as 'video' | 'article' | 'podcast',
   category: 'Finanças Pessoais',
-  authorId: 'a1',
+  authorId: '',
   thumbnail: '',
   duration: '5 min',
   tags: '',
@@ -231,7 +231,7 @@ export function AdminPage() {
           description: item.description || '',
           type,
           category: item.regionTag || fallback?.category || 'Geral',
-          authorId: fallback?.authorId || 'a1',
+          authorId: fallback?.authorId || AUTHORS[0]?.id || '',
           thumbnail: item.thumbnailUrl || fallback?.thumbnail || '',
           duration: fallback?.duration || '',
           views: fallback?.views || 0,
@@ -267,7 +267,7 @@ export function AdminPage() {
           description: item.description || '',
           type,
           category: item.regionTag || fallback?.category || 'Geral',
-          authorId: fallback?.authorId || 'a1',
+          authorId: fallback?.authorId || AUTHORS[0]?.id || '',
           thumbnail: item.thumbnailUrl || fallback?.thumbnail || '',
           duration: fallback?.duration || '',
           views: fallback?.views || 0,
@@ -499,6 +499,7 @@ export function AdminPage() {
           thumbnailUrl: stripApi(contentForm.thumbnailUrl || contentForm.thumbnail),
           isJindungo: contentForm.isJindungo,
           categories: tags.map(tag => ({ name: tag, slug: tag.toLowerCase().replace(/\s+/g, '-') })),
+          authorId: contentForm.authorId,
         });
       } catch (err) {
         console.error('Erro ao actualizar no backend:', err);
@@ -528,7 +529,7 @@ export function AdminPage() {
       showNotif('success', 'Conteúdo actualizado com sucesso!');
       setShowContentModal(false);
       setEditingId(null);
-      setContentForm(INITIAL_CONTENT_FORM);
+      setContentForm({ ...INITIAL_CONTENT_FORM, authorId: AUTHORS[0]?.id || user?.id || '' });
       return;
     }
 
@@ -563,6 +564,7 @@ export function AdminPage() {
         isJindungo: newItem.isJindungo,
         status: contentForm.status === 'published' ? 'PUBLISHED' : contentForm.status === 'under_review' ? 'UNDER_REVIEW' : 'DRAFT',
         categories: newItem.tags.map((tag) => ({ name: tag, slug: tag.toLowerCase().replace(/\s+/g, '-') })),
+        authorId: contentForm.authorId,
       });
       newItem.id = String(created.contentId ?? created.id ?? newItem.id);
 
@@ -580,7 +582,7 @@ export function AdminPage() {
       CONTENT_ITEMS.unshift(newItem);
       setShowContentModal(false);
       setEditingId(null);
-      setContentForm(INITIAL_CONTENT_FORM);
+      setContentForm({ ...INITIAL_CONTENT_FORM, authorId: AUTHORS[0]?.id || user?.id || '' });
     } catch (err) {
       console.error('Erro do backend:', err);
       showNotif('error', err instanceof Error ? err.message : 'Falha ao guardar no servidor.');
@@ -1152,7 +1154,7 @@ export function AdminPage() {
                 <button
                   onClick={() => {
                     setEditingId(null);
-                    setContentForm(INITIAL_CONTENT_FORM);
+                    setContentForm({ ...INITIAL_CONTENT_FORM, authorId: AUTHORS[0]?.id || user?.id || '' });
                     setShowContentModal(true);
                     setTimeout(() => {
                       if (editorRef.current) {

@@ -465,6 +465,7 @@ export async function createContentItemBackend(payload: {
   status?: string;
   categories?: Array<{ categoryId?: string; name?: string; slug?: string }>;
   topicId?: string;
+  authorId?: string;
 }) {
   return requestJson<{ contentId?: string; id?: string }>('/v1/content-items', {
     method: 'POST',
@@ -489,6 +490,7 @@ export async function updateContentItemBackend(contentId: string, payload: {
   status?: string;
   categories?: Array<{ categoryId?: string; name?: string; slug?: string }>;
   topicId?: string;
+  authorId?: string;
 }) {
   return requestJson<{ contentId?: string; id?: string }>(`/v1/content-items/${contentId}`, {
     method: 'PUT',
