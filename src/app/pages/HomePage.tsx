@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { Flame, BookOpen, Play, ArrowRight, Users, Award, MessageSquare, Star, HelpCircle, Map, ChevronRight } from 'lucide-react';
-import { CONTENT_ITEMS, CATEGORIES, AUTHORS, QUIZZES, formatViews, type ContentItem } from '../data/mockData';
+import { CONTENT_ITEMS, CATEGORIES, AUTHORS, QUIZZES, MOCK_USERS, FORUM_POSTS, formatViews, type ContentItem } from '../data/mockData';
 import { mapContentItem, extractArray } from '../data/backendApi';
 import { ContentCard } from '../components/ui/ContentCard';
 import { useAuth } from '../context/AuthContext';
@@ -117,9 +117,9 @@ export function HomePage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
           {[
             { icon: BookOpen, label: 'Conteúdos', value: `${CONTENT_ITEMS.length}+`, color: '#7B1D2D' },
-            { icon: Users, label: 'Utilizadores', value: '24K', color: '#C9A84C' },
+            { icon: Users, label: 'Utilizadores', value: MOCK_USERS.length.toString(), color: '#C9A84C' },
             { icon: Award, label: 'Quizzes', value: QUIZZES.length.toString(), color: '#D64E12' },
-            { icon: MessageSquare, label: 'Debates', value: '38', color: '#5C8A6E' },
+            { icon: MessageSquare, label: 'Debates', value: FORUM_POSTS.length.toString(), color: '#5C8A6E' },
           ].map(stat => (
             <div key={stat.label} className="bg-white rounded-2xl p-4 flex items-center gap-3 shadow-sm">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: stat.color + '15' }}>
@@ -218,16 +218,23 @@ export function HomePage() {
                 {/* Simplified Angola SVG outline */}
                 <div className="relative w-full max-w-xs aspect-square">
                   <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full">
-                    {/* Simplified Angola shape */}
+                    {/* Angola main territory */}
                     <path
-                      d="M 20 15 L 28 12 L 35 10 L 45 8 L 55 10 L 65 15 L 72 22 L 75 32 L 78 42 L 75 52 L 70 62 L 65 72 L 58 80 L 50 88 L 40 85 L 32 80 L 24 72 L 18 62 L 14 50 L 12 40 L 14 28 Z"
+                      d="M 18 25 L 20 42 L 16 56 L 14 76 L 14 85 L 25 85 L 35 86 L 45 85 L 50 78 L 65 78 L 70 70 L 72 60 L 68 50 L 66 45 L 70 35 L 68 28 L 60 25 L 50 25 L 45 25 L 45 15 L 35 14 L 28 15 L 24 25 Z"
                       fill="rgba(123,29,45,0.06)"
                       stroke="rgba(123,29,45,0.2)"
-                      strokeWidth="1"
+                      strokeWidth="1.2"
+                      strokeLinejoin="round"
                     />
-                    {/* Cabinda exclave (separate box north) */}
-                    <rect x="13" y="5" width="8" height="8" rx="1" fill="rgba(123,29,45,0.06)" stroke="rgba(123,29,45,0.2)" strokeWidth="1" />
-                    <line x1="17" y1="13" x2="20" y2="15" stroke="rgba(123,29,45,0.15)" strokeWidth="0.5" strokeDasharray="1,1" />
+                    {/* Cabinda exclave */}
+                    <path
+                      d="M 13 8 L 18 5 L 20 10 L 15 13 Z"
+                      fill="rgba(123,29,45,0.06)"
+                      stroke="rgba(123,29,45,0.2)"
+                      strokeWidth="1.2"
+                      strokeLinejoin="round"
+                    />
+                    <line x1="17" y1="13" x2="18" y2="25" stroke="rgba(123,29,45,0.15)" strokeWidth="0.5" strokeDasharray="1,1" />
                   </svg>
 
                   {/* Province dots */}
@@ -281,7 +288,7 @@ export function HomePage() {
                   {[
                     { label: 'Províncias', value: '18', color: '#7B1D2D' },
                     { label: 'População estimada', value: '33M+', color: '#C9A84C' },
-                    { label: '2.Âº produtor de petróleo em Ãfrica', value: '90%+ exportações', color: '#D64E12' },
+                    { label: '2º produtor de petróleo em África', value: '90%+ exportações', color: '#D64E12' },
                     { label: 'Terra arável', value: '35M ha', color: '#5C8A6E' },
                   ].map(item => (
                     <div key={item.label} className="flex items-center justify-between py-2 border-b last:border-0" style={{ borderColor: 'rgba(123,29,45,0.08)' }}>

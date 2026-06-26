@@ -104,6 +104,7 @@ export interface User {
   savedContent: string[];
   province: string;
   isActive: boolean;
+  subscribersCount?: number;
 }
 
 // Estes arrays são populados pelo backend via bootstrapWebData() em App.tsx.

@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 import { Search, Filter, X, Flame, Play, FileText, Headphones, SlidersHorizontal } from 'lucide-react';
-import { CONTENT_ITEMS, CATEGORIES } from '../data/mockData';
+import { CONTENT_ITEMS, CATEGORIES, getAuthorById } from '../data/mockData';
 import { ContentCard } from '../components/ui/ContentCard';
 
 const SORT_OPTIONS = [
@@ -35,11 +35,13 @@ export function ExplorePage() {
     if (activeType !== 'all') items = items.filter(c => c.type === activeType);
     if (search.trim()) {
       const q = search.toLowerCase();
-      items = items.filter(c =>
-        c.title.toLowerCase().includes(q) ||
-        c.description.toLowerCase().includes(q) ||
-        c.tags.some(t => t.toLowerCase().includes(q))
-      );
+      items = items.filter(c => {
+        const author = getAuthorById(c.authorId);
+        return c.title.toLowerCase().includes(q) ||
+          c.description.toLowerCase().includes(q) ||
+          c.tags.some(t => t.toLowerCase().includes(q)) ||
+          (author && author.name.toLowerCase().includes(q));
+      });
     }
     if (sortBy === 'popular') items.sort((a, b) => b.views - a.views);
     else if (sortBy === 'liked') items.sort((a, b) => b.likes - a.likes);

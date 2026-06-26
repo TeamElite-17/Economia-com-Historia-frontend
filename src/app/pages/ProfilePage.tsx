@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { User, BookOpen, Award, Bell, Settings, Camera, MapPin, Calendar, Edit2, Save, X } from 'lucide-react';
+import { User, BookOpen, Award, Bell, Settings, Camera, MapPin, Calendar, Edit2, Save, X, FileText, Trash2, Edit3 } from 'lucide-react';
 import { CONTENT_ITEMS, QUIZZES, AUTHORS, formatViews, formatDate } from '../data/mockData';
 import { ContentCard } from '../components/ui/ContentCard';
 import { useAuth } from '../context/AuthContext';
+import { deleteContentItemBackend } from '../data/backendApi';
 
-type Tab = 'overview' | 'history' | 'saved' | 'quizzes' | 'settings';
+type Tab = 'overview' | 'history' | 'saved' | 'quizzes' | 'publications' | 'settings';
 
 export function ProfilePage() {
-  const { user, isLoggedIn, openLogin, updateUser, logout } = useAuth();
+  const { user, isLoggedIn, openLogin, updateUser, logout, canPublish } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<Tab>('overview');
   const [editing, setEditing] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [editName, setEditName] = useState(user?.name || '');
   const [editBio, setEditBio] = useState(user?.bio || '');
 
@@ -37,17 +39,35 @@ export function ProfilePage() {
   const completedQuizzes = QUIZZES.filter(q => user?.completedQuizzes.includes(q.id));
   const subscribedAuthors = AUTHORS.filter(a => user?.subscriptions.includes(a.id));
 
+  const [localContentItems, setLocalContentItems] = useState(CONTENT_ITEMS);
+  const myPublications = localContentItems.filter(c => c.authorId === user?.id);
+
   const tabs: { id: Tab; label: string; icon: typeof User }[] = [
     { id: 'overview', label: 'Visão Geral', icon: User },
     { id: 'history', label: 'Histórico', icon: BookOpen },
     { id: 'saved', label: 'Guardados', icon: Bell },
     { id: 'quizzes', label: 'Quizzes', icon: Award },
+    ...(myPublications.length > 0 || canPublish ? [{ id: 'publications' as Tab, label: 'Publicações', icon: FileText }] : []),
     { id: 'settings', label: 'Definições', icon: Settings },
   ];
 
   const handleSave = () => {
     updateUser({ name: editName, bio: editBio });
     setEditing(false);
+  };
+
+  const handleDeletePublication = async (id: string) => {
+    try {
+      await deleteContentItemBackend(id);
+      setLocalContentItems(prev => prev.filter(c => c.id !== id));
+      const globalIdx = CONTENT_ITEMS.findIndex(c => c.id === id);
+      if (globalIdx >= 0) {
+        CONTENT_ITEMS.splice(globalIdx, 1);
+      }
+      setDeleteConfirmId(null);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Erro ao apagar publicação');
+    }
   };
 
   return (
@@ -260,6 +280,59 @@ export function ProfilePage() {
         </div>
       )}
 
+      {activeTab === 'publications' && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-gray-900">As Minhas Publicações</h2>
+            <button
+              onClick={() => navigate('/publicar')}
+              className="px-4 py-2 rounded-xl text-sm font-medium text-white"
+              style={{ backgroundColor: '#7B1D2D' }}
+            >
+              Nova publicação
+            </button>
+          </div>
+          {myPublications.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {myPublications.map(c => (
+                <div key={c.id} className="relative group">
+                  <ContentCard content={c} />
+                  <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        navigate(`/publicar?edit=${c.id}`);
+                      }}
+                      className="p-2 rounded-lg bg-white/90 shadow text-gray-700 hover:text-blue-600 backdrop-blur-sm"
+                      title="Editar"
+                    >
+                      <Edit3 size={16} />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setDeleteConfirmId(c.id);
+                      }}
+                      className="p-2 rounded-lg bg-white/90 shadow text-gray-700 hover:text-red-600 backdrop-blur-sm"
+                      title="Apagar"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 text-gray-500 bg-white rounded-2xl shadow-sm">
+              <FileText size={32} className="mx-auto mb-3 opacity-40" />
+              <p className="text-sm">Ainda não tens nenhuma publicação.</p>
+            </div>
+          )}
+        </div>
+      )}
+
       {activeTab === 'settings' && (
         <div className="space-y-4">
           <div className="bg-white rounded-2xl p-5 shadow-sm">
@@ -290,6 +363,37 @@ export function ProfilePage() {
           </button>
         </div>
       )}
+      {/* Modal de confirmação de exclusão */}
+      {deleteConfirmId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">
+            <div className="flex flex-col items-center text-center mb-6">
+              <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
+                <Trash2 size={24} className="text-red-600" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-1">Apagar publicação?</h3>
+              <p className="text-sm text-gray-500">
+                Esta ação é irreversível. A publicação será removida permanentemente.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setDeleteConfirmId(null)}
+                className="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => void handleDeletePublication(deleteConfirmId)}
+                className="flex-1 py-2.5 rounded-xl text-sm font-medium text-white bg-red-600 hover:bg-red-700 transition-colors"
+              >
+                Sim, apagar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import {
   LayoutDashboard, BookOpen, HelpCircle, Users, MessageSquare, Settings,
@@ -6,7 +6,9 @@ import {
   Play, FileText, Headphones, Pin, ShieldAlert, BarChart3, Check,
   AlertTriangle, ToggleLeft, ToggleRight, Save, Flame, Star,
   Lock, Globe, ChevronDown, ChevronUp, Search,
-  LogOut, ExternalLink, Shield, Menu as MenuIcon, Loader, Eye, CheckCircle, XCircle
+  LogOut, ExternalLink, Shield, Menu as MenuIcon, Loader, Eye, CheckCircle, XCircle,
+  Bold, Italic, List, Link as LinkIcon, Quote, Heading1, Heading2, Heading3,
+  Underline, Strikethrough, AlignLeft, AlignCenter, AlignRight, AlignJustify
 } from 'lucide-react';
 import {
   CONTENT_ITEMS, QUIZZES, MOCK_USERS, FORUM_POSTS, AUTHORS,
@@ -123,6 +125,64 @@ export function AdminPage() {
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<{ file?: string; progress: number }>({ progress: 0 });
+
+  // Editor state
+  const editorRef = useRef<HTMLDivElement>(null);
+  const [linkPrompt, setLinkPrompt] = useState<{ show: boolean; range: Range | null; text: string }>({ show: false, range: null, text: '' });
+  const [linkUrl, setLinkUrl] = useState('https://');
+
+  const handleEditorInput = () => {
+    if (editorRef.current) {
+      setContentForm((f) => ({ ...f, content: editorRef.current!.innerHTML }));
+    }
+  };
+
+  const execFormat = (command: string, value: string | undefined = undefined) => {
+    document.execCommand(command, false, value);
+    if (editorRef.current) {
+      editorRef.current.focus();
+      handleEditorInput();
+    }
+  };
+
+  const addLink = () => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) {
+      setLinkPrompt({ show: true, range: null, text: '' });
+      setLinkUrl('https://');
+      return;
+    }
+    const range = selection.getRangeAt(0).cloneRange();
+    const isCollapsed = selection.isCollapsed;
+    const selectedText = range.toString();
+
+    setLinkPrompt({ show: true, range, text: isCollapsed ? '' : selectedText });
+    setLinkUrl('https://');
+  };
+
+  const confirmLink = () => {
+    if (!linkUrl || linkUrl === 'https://') {
+      setLinkPrompt({ show: false, range: null, text: '' });
+      return;
+    }
+
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+
+    const selection = window.getSelection();
+    if (selection && linkPrompt.range) {
+      selection.removeAllRanges();
+      selection.addRange(linkPrompt.range);
+    }
+
+    const linkText = linkPrompt.text || linkUrl;
+    const linkHTML = `<a href="${linkUrl}" target="_blank" rel="noopener noreferrer" style="color: #7B1D2D; text-decoration: underline;">${linkText}</a>`;
+    
+    document.execCommand('insertHTML', false, linkHTML);
+    handleEditorInput();
+    setLinkPrompt({ show: false, range: null, text: '' });
+  };
   const [systemSettings, setSystemSettings] = useState<SystemSetting[]>([
     { id: 'maintenance', title: 'Modo de manutenção', desc: 'Coloca a plataforma em manutenção temporária', active: false },
     { id: 'moderation', title: 'Moderação de comentários', desc: 'Requer aprovação manual para novos comentários', active: true },
@@ -550,6 +610,11 @@ export function AdminPage() {
     });
     setEditingId(c.id);
     setShowContentModal(true);
+    setTimeout(() => {
+      if (editorRef.current && c.type === 'article') {
+        editorRef.current.innerHTML = contentStripped;
+      }
+    }, 50);
   };
 
   const handleDeleteContent = async (id: string) => {
@@ -1082,10 +1147,19 @@ export function AdminPage() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
                 <div>
                   <h1 className="text-gray-900 text-xl md:text-2xl font-bold">Gestão de Conteúdo</h1>
-                  <p className="text-sm text-gray-500">{contentItems.length} conteúdos Â· CMS</p>
+                  <p className="text-sm text-gray-500">{contentItems.length} conteúdos</p>
                 </div>
                 <button
-                  onClick={() => { setEditingId(null); setContentForm(INITIAL_CONTENT_FORM); setShowContentModal(true); }}
+                  onClick={() => {
+                    setEditingId(null);
+                    setContentForm(INITIAL_CONTENT_FORM);
+                    setShowContentModal(true);
+                    setTimeout(() => {
+                      if (editorRef.current) {
+                        editorRef.current.innerHTML = '';
+                      }
+                    }, 50);
+                  }}
                   className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm text-white font-medium w-full sm:w-auto justify-center"
                   style={{ backgroundColor: '#7B1D2D' }}
                 >
@@ -1565,7 +1639,7 @@ export function AdminPage() {
                           <td className="px-4 py-3">
                             <div className="text-xs text-gray-500 space-y-0.5">
                               <div>{u.watchHistory.length} vídeos vistos</div>
-                              <div>{u.completedQuizzes.length} quizzes Â· {u.subscriptions.length} subs.</div>
+                              <div>{u.completedQuizzes.length} quizzes· {u.subscriptions.length} subs.</div>
                             </div>
                           </td>
                           <td className="px-4 py-3">
@@ -2268,10 +2342,69 @@ export function AdminPage() {
               </div>
 
               {/* Content body */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Conteúdo (texto do artigo)</label>
-                <textarea value={contentForm.content} onChange={e => setContentForm(f => ({ ...f, content: e.target.value }))} rows={7} placeholder="Escreve o conteúdo aqui..." className="w-full px-3 py-2 rounded-xl border text-sm resize-y focus:outline-none" style={{ borderColor: 'rgba(123,29,45,0.2)' }} />
-              </div>
+              {contentForm.type === 'article' && (
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1 uppercase tracking-wide">Conteúdo (texto do artigo)</label>
+                  <div className="border rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-inset focus-within:border-transparent transition-all" style={{ borderColor: 'rgba(123,29,45,0.2)', '--tw-ring-color': 'rgba(123,29,45,0.2)' } as React.CSSProperties}>
+                    <div className="flex flex-wrap items-center gap-1 p-2 bg-gray-50 border-b border-gray-200">
+                      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => execFormat('bold')} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors" title="Negrito"><Bold size={15} /></button>
+                      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => execFormat('italic')} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors" title="Itálico"><Italic size={15} /></button>
+                      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => execFormat('underline')} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors" title="Sublinhado"><Underline size={15} /></button>
+                      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => execFormat('strikeThrough')} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors" title="Rasurado"><Strikethrough size={15} /></button>
+                      
+                      <div className="w-px h-5 bg-gray-300 mx-1" />
+                      
+                      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => execFormat('justifyLeft')} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors" title="Alinhar à Esquerda"><AlignLeft size={15} /></button>
+                      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => execFormat('justifyCenter')} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors" title="Centrar"><AlignCenter size={15} /></button>
+                      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => execFormat('justifyRight')} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors" title="Alinhar à Direita"><AlignRight size={15} /></button>
+                      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => execFormat('justifyFull')} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors" title="Justificar"><AlignJustify size={15} /></button>
+                      
+                      <div className="w-px h-5 bg-gray-300 mx-1" />
+                      
+                      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => execFormat('formatBlock', 'H1')} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors" title="Título 1"><Heading1 size={15} /></button>
+                      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => execFormat('formatBlock', 'H2')} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors" title="Título 2"><Heading2 size={15} /></button>
+                      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => execFormat('formatBlock', 'H3')} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors" title="Título 3"><Heading3 size={15} /></button>
+                      
+                      <div className="w-px h-5 bg-gray-300 mx-1" />
+
+                      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => execFormat('insertUnorderedList')} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors" title="Lista com marcas"><List size={15} /></button>
+                      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => execFormat('insertOrderedList')} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors flex gap-0.5 items-center" title="Lista numerada"><span className="text-[10px] font-bold">1.</span><List size={15} /></button>
+                      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => execFormat('formatBlock', 'BLOCKQUOTE')} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors" title="Citação"><Quote size={15} /></button>
+                      
+                      <div className="w-px h-5 bg-gray-300 mx-1" />
+                      
+                      <div className="relative">
+                        <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={addLink} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors" title="Link"><LinkIcon size={15} /></button>
+                        {linkPrompt.show && (
+                          <div className="absolute top-full right-0 mt-2 p-3 bg-white rounded-xl shadow-xl border z-50 flex items-center gap-2" style={{ borderColor: 'rgba(123,29,45,0.1)', width: '280px' }}>
+                            <input
+                              type="text"
+                              autoFocus
+                              value={linkUrl}
+                              onChange={(e) => setLinkUrl(e.target.value)}
+                              onKeyDown={(e) => { if (e.key === 'Enter') confirmLink(); if (e.key === 'Escape') setLinkPrompt({ show: false, range: null, text: '' }); }}
+                              className="flex-1 px-3 py-1.5 text-sm border rounded-lg focus:outline-none focus:border-red-800"
+                            />
+                            <button type="button" onClick={confirmLink} className="p-1.5 bg-red-800 text-white rounded-lg hover:bg-red-900 transition-colors">
+                              <Check size={16} />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => execFormat('formatBlock', 'DIV')} className="p-1.5 rounded hover:bg-gray-200 text-gray-700 transition-colors text-xs font-medium ml-auto" title="Remover formatação de bloco">Texto Normal</button>
+                    </div>
+                    <div
+                      ref={editorRef}
+                      contentEditable
+                      onInput={handleEditorInput}
+                      onBlur={handleEditorInput}
+                      onFocus={() => document.execCommand('defaultParagraphSeparator', false, 'p')}
+                      className="editor-content w-full px-4 py-3 text-sm min-h-[250px] focus:outline-none bg-white"
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Actions */}
               <div className="flex gap-3 pt-2">

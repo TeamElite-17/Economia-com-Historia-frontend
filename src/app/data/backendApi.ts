@@ -181,7 +181,7 @@ export function mapContentItem(raw: AnyRecord) {
     tags: fallback?.tags ?? [],
     isJindungo: raw.isJindungo ?? fallback?.isJindungo ?? false,
     featured: fallback?.featured ?? false,
-    content: resolveMediaUrl(String(contentUrl)),
+    content: type === 'article' ? String(contentUrl) : resolveMediaUrl(String(contentUrl)),
     status: (String(raw.status ?? fallback?.status ?? 'published').toLowerCase().includes('publish') ? 'published' : 'draft') as 'published' | 'draft',
   } satisfies ContentItem;
 }
@@ -265,13 +265,14 @@ function mapUser(raw: AnyRecord) {
     avatar: fallback?.avatar ?? generatedAvatar(name),
     role,
     bio: fallback?.bio ?? '',
-    subscriptions: fallback?.subscriptions ?? [],
-    completedQuizzes: fallback?.completedQuizzes ?? [],
-    watchHistory: fallback?.watchHistory ?? [],
+    subscriptions: raw.subscriptionsCount !== undefined ? Array(Number(raw.subscriptionsCount)).fill('') : fallback?.subscriptions ?? [],
+    completedQuizzes: raw.completedQuizzesCount !== undefined ? Array(Number(raw.completedQuizzesCount)).fill('') : fallback?.completedQuizzes ?? [],
+    watchHistory: raw.watchHistoryCount !== undefined ? Array(Number(raw.watchHistoryCount)).fill('') : fallback?.watchHistory ?? [],
     joinedAt: String(raw.registrationDate ?? fallback?.joinedAt ?? new Date().toISOString().split('T')[0]),
     savedContent: fallback?.savedContent ?? [],
     province: fallback?.province ?? String(raw.preferredLanguage ?? 'Angola'),
     isActive: fallback?.isActive ?? true,
+    subscribersCount: raw.subscribersCount !== undefined ? Number(raw.subscribersCount) : fallback?.subscribersCount ?? 0,
   } satisfies User;
 }
 
@@ -297,8 +298,6 @@ export async function bootstrapWebData() {
     requestJson<unknown>('/v1/content-items'),
     requestJson<unknown>('/v1/quizzes'),
     requestJson<unknown>('/v1/forum-threads'),
-    requestJson<unknown>('/v1/posts'),
-    requestJson<unknown>('/v1/comments'),
     requestJson<unknown>('/v1/categories'),
     requestJson<unknown>('/v1/users'),
   ]);
@@ -306,10 +305,10 @@ export async function bootstrapWebData() {
   const contentPayload = results[0].status === 'fulfilled' ? extractArray<AnyRecord>(results[0].value) : [];
   const quizPayload = results[1].status === 'fulfilled' ? extractArray<AnyRecord>(results[1].value) : [];
   const threadPayload = results[2].status === 'fulfilled' ? extractArray<AnyRecord>(results[2].value) : [];
-  const postPayload = results[3].status === 'fulfilled' ? extractArray<AnyRecord>(results[3].value) : [];
-  const commentPayload = results[4].status === 'fulfilled' ? extractArray<AnyRecord>(results[4].value) : [];
-  const categoryPayload = results[5].status === 'fulfilled' ? extractArray<AnyRecord>(results[5].value) : [];
-  const userPayload = results[6].status === 'fulfilled' ? extractArray<AnyRecord>(results[6].value) : [];
+  const postPayload: AnyRecord[] = [];
+  const commentPayload: AnyRecord[] = [];
+  const categoryPayload = results[3].status === 'fulfilled' ? extractArray<AnyRecord>(results[3].value) : [];
+  const userPayload = results[4].status === 'fulfilled' ? extractArray<AnyRecord>(results[4].value) : [];
 
   if (categoryPayload.length > 0) {
     applyCategories(categoryPayload.map((item) => String(item.name ?? item.slug ?? '')));
@@ -393,7 +392,7 @@ export async function bootstrapWebData() {
         name: u.name,
         avatar: u.avatar,
         bio: u.bio || '',
-        subscribers: 0,
+        subscribers: u.subscribersCount || 0,
         specialty: u.role === 'ESCRITOR' ? 'Escritor / Professor'
           : u.role === 'REVISOR' ? 'Revisor'
           : u.role === 'APROVADOR' ? 'Aprovador'

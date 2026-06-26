@@ -5,7 +5,7 @@ import {
   MessageSquare, Bookmark, Clock, CheckCheck
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { CONTENT_ITEMS } from '../../data/mockData';
+import { CONTENT_ITEMS, AUTHORS, getAuthorById } from '../../data/mockData';
 import { requestJson } from '../../data/backendApi';
 
 interface HeaderProps {
@@ -85,12 +85,22 @@ export function Header({ onMenuToggle, sidebarOpen }: HeaderProps) {
   }, []);
 
   // Quick search suggestions
-  const suggestions = searchQuery.trim()
-    ? CONTENT_ITEMS.filter(c =>
-        c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.category.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 4)
+  const sq = searchQuery.trim().toLowerCase();
+  
+  const authorSuggestions = sq
+    ? AUTHORS.filter(a => a.name.toLowerCase().includes(sq)).slice(0, 2)
     : [];
+
+  const contentSuggestions = sq
+    ? CONTENT_ITEMS.filter(c => {
+        const author = getAuthorById(c.authorId);
+        return c.title.toLowerCase().includes(sq) ||
+          c.category.toLowerCase().includes(sq) ||
+          (author && author.name.toLowerCase().includes(sq));
+      }).slice(0, 4)
+    : [];
+    
+  const hasSuggestions = authorSuggestions.length > 0 || contentSuggestions.length > 0;
 
   return (
     <header
@@ -139,7 +149,7 @@ export function Header({ onMenuToggle, sidebarOpen }: HeaderProps) {
         </form>
 
         {/* Quick search dropdown */}
-        {searchFocused && (searchQuery.trim() ? suggestions.length > 0 : true) && (
+        {searchFocused && (searchQuery.trim() ? hasSuggestions : true) && (
           <div className="absolute top-full mt-2 left-0 right-0 bg-white rounded-2xl shadow-2xl overflow-hidden z-50 border border-gray-100">
             {searchQuery.trim() === '' ? (
               <div className="p-4">
@@ -157,22 +167,47 @@ export function Header({ onMenuToggle, sidebarOpen }: HeaderProps) {
                   ))}
                 </div>
               </div>
-            ) : suggestions.length > 0 ? (
+            ) : hasSuggestions ? (
               <div className="py-2">
-                {suggestions.map(c => (
-                  <Link
-                    key={c.id}
-                    to={`/conteudo/${c.id}`}
-                    onClick={() => { setSearchFocused(false); setSearchQuery(''); }}
-                    className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors"
-                  >
-                    <img src={c.thumbnail} alt="" className="w-10 h-7 rounded object-cover flex-shrink-0" />
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">{c.title}</p>
-                      <p className="text-xs text-gray-400">{c.category} · {c.type}</p>
-                    </div>
-                  </Link>
-                ))}
+                {authorSuggestions.length > 0 && (
+                  <div className="mb-2">
+                    <div className="px-4 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wide">Canais</div>
+                    {authorSuggestions.map(a => (
+                      <Link
+                        key={a.id}
+                        to={`/explorar?q=${encodeURIComponent(a.name)}`}
+                        onClick={() => { setSearchFocused(false); setSearchQuery(''); }}
+                        className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition-colors"
+                      >
+                        <img src={a.avatar} alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">{a.name}</p>
+                          <p className="text-xs text-gray-400">Canal</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+                
+                {contentSuggestions.length > 0 && (
+                  <div>
+                    <div className="px-4 py-1 text-xs font-semibold text-gray-400 uppercase tracking-wide">Conteúdos</div>
+                    {contentSuggestions.map(c => (
+                      <Link
+                        key={c.id}
+                        to={`/conteudo/${c.id}`}
+                        onClick={() => { setSearchFocused(false); setSearchQuery(''); }}
+                        className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition-colors"
+                      >
+                        <img src={c.thumbnail} alt="" className="w-10 h-7 rounded object-cover flex-shrink-0" />
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">{c.title}</p>
+                          <p className="text-xs text-gray-400">{c.category} · {c.type}</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
                 <div className="px-4 py-2 border-t border-gray-50">
                   <button
                     onClick={() => { navigate(`/explorar?q=${encodeURIComponent(searchQuery)}`); setSearchFocused(false); setSearchQuery(''); }}

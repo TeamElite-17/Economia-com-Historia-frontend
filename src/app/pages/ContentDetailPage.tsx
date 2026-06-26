@@ -517,15 +517,7 @@ export function ContentDetailPage() {
           {!isJindungoLocked && content.type === 'article' && (
             <div className="bg-white rounded-2xl p-6 mb-6 shadow-sm">
               <h3 className="font-semibold text-gray-900 mb-4">Conteúdo do Artigo</h3>
-              <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed space-y-3">
-                {content.content.split('\n\n').map((para, i) => (
-                  <p key={i} className={para.startsWith('**') ? 'font-semibold text-gray-900' : ''}
-                    dangerouslySetInnerHTML={{
-                      __html: para.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    }}
-                  />
-                ))}
-              </div>
+              <div className="editor-content prose prose-sm max-w-none text-gray-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: content.content }} />
             </div>
           )}
 
