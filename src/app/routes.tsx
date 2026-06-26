@@ -8,6 +8,7 @@ import { QuizDetailPage } from './pages/QuizDetailPage';
 import { ForumPage } from './pages/ForumPage';
 import { ForumThreadPage } from './pages/ForumThreadPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { AuthorPage } from './pages/AuthorPage';
 import { SubscriptionsPage } from './pages/SubscriptionsPage';
 import { AdminPage } from './pages/AdminPage';
 import { PublishPage } from './pages/PublishPage';
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
       { path: 'forum', Component: ForumPage },
       { path: 'forum/:id', Component: ForumThreadPage },
       { path: 'perfil', Component: ProfilePage },
+      { path: 'autor/:id', Component: AuthorPage },
       { path: 'subscricoes', Component: SubscriptionsPage },
       { path: 'publicar', Component: PublishPage },
       // Role-specific dashboards

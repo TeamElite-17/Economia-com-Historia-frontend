@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
-import { useSearchParams } from 'react-router';
-import { Search, Filter, X, Flame, Play, FileText, Headphones, SlidersHorizontal } from 'lucide-react';
-import { CONTENT_ITEMS, CATEGORIES, getAuthorById } from '../data/mockData';
+import { Link, useSearchParams } from 'react-router';
+import { Search, Filter, X, Flame, Play, FileText, Headphones, SlidersHorizontal, Users, CheckCircle } from 'lucide-react';
+import { CONTENT_ITEMS, CATEGORIES, getAuthorById, AUTHORS, formatViews } from '../data/mockData';
+import { useAuth } from '../context/AuthContext';
 import { ContentCard } from '../components/ui/ContentCard';
 
 const SORT_OPTIONS = [
@@ -18,6 +19,8 @@ const TYPE_FILTERS = [
 ];
 
 export function ExplorePage() {
+  const { user, updateUser, subscribeToAuthor, unsubscribeFromAuthor } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchParams] = useSearchParams();
   const initialFilter = searchParams.get('filter') || '';
   const initialQuery = searchParams.get('q') || '';
@@ -27,6 +30,12 @@ export function ExplorePage() {
   const [activeType, setActiveType] = useState('all');
   const [sortBy, setSortBy] = useState('recent');
   const [showJindungo, setShowJindungo] = useState(initialFilter === 'jindungo');
+
+  const matchedAuthor = useMemo(() => {
+    if (!search.trim()) return null;
+    const q = search.toLowerCase();
+    return AUTHORS.find(a => a.name.toLowerCase().includes(q) || a.specialty.toLowerCase().includes(q));
+  }, [search]);
 
   const filtered = useMemo(() => {
     let items = [...CONTENT_ITEMS];
@@ -57,6 +66,28 @@ export function ExplorePage() {
   };
 
   const hasFilters = activeCategory !== 'Todos' || activeType !== 'all' || showJindungo || search;
+
+  const handleSubscribeToggle = async (authorId: string) => {
+    if (!user) {
+      alert('Inicia sessão para subscrever a este autor.');
+      return;
+    }
+    try {
+      setIsSubmitting(true);
+      const isSubscribed = user.subscriptions.includes(authorId);
+      if (isSubscribed) {
+        await unsubscribeFromAuthor(authorId);
+        updateUser({ subscriptions: user.subscriptions.filter(s => s !== authorId) });
+      } else {
+        await subscribeToAuthor(authorId);
+        updateUser({ subscriptions: [...user.subscriptions, authorId] });
+      }
+    } catch (err) {
+      alert('Erro ao atualizar subscrição. Tenta novamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="px-4 md:px-8 py-6 max-w-7xl mx-auto">
@@ -162,6 +193,72 @@ export function ExplorePage() {
           {search && ` para "${search}"`}
         </span>
       </div>
+
+      {/* Author Match Result */}
+      {matchedAuthor && (
+        <div className="mb-8">
+          <h2 className="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wider">Canais correspondentes</h2>
+          <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row items-center sm:items-start gap-6 relative overflow-hidden group">
+            {/* Background Hint */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gray-50 rounded-full transform translate-x-10 -translate-y-10 group-hover:bg-[#F5E8EB] transition-colors duration-500 z-0"></div>
+            
+            <Link to={`/autor/${matchedAuthor.id}`} className="relative z-10 flex-shrink-0">
+              <img 
+                src={matchedAuthor.avatar} 
+                alt={matchedAuthor.name} 
+                className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover border-2"
+                style={{ borderColor: '#F5E8EB' }}
+              />
+            </Link>
+            
+            <div className="flex-1 text-center sm:text-left relative z-10 flex flex-col justify-center h-full pt-2">
+              <Link to={`/autor/${matchedAuthor.id}`} className="block group-hover:text-[#7B1D2D] transition-colors">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1 flex items-center justify-center sm:justify-start gap-2">
+                  {matchedAuthor.name}
+                  <CheckCircle size={16} className="text-gray-400" />
+                </h3>
+              </Link>
+              
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 text-sm text-gray-500 mb-3">
+                <span>@{matchedAuthor.name.replace(/\s+/g, '').toLowerCase()}</span>
+                <span className="hidden sm:inline">•</span>
+                <span className="flex items-center gap-1">
+                  {formatViews(matchedAuthor.subscribers + (user?.subscriptions.includes(matchedAuthor.id) ? 1 : 0))} subscritores
+                </span>
+                <span className="hidden sm:inline">•</span>
+                <span>{CONTENT_ITEMS.filter(c => c.authorId === matchedAuthor.id).length} publicações</span>
+              </div>
+              
+              <p className="text-sm text-gray-600 line-clamp-2 max-w-2xl mb-4 sm:mb-0">
+                {matchedAuthor.bio || `Especialista em ${matchedAuthor.specialty} associado a ${matchedAuthor.institution}.`}
+              </p>
+            </div>
+            
+            <div className="relative z-10 flex-shrink-0 flex items-center justify-center sm:h-full sm:pt-6">
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSubscribeToggle(matchedAuthor.id);
+                }}
+                disabled={isSubmitting}
+                className="px-6 py-2.5 rounded-full font-semibold transition-all shadow-sm text-sm"
+                style={user?.subscriptions.includes(matchedAuthor.id)
+                  ? { backgroundColor: '#EBF3EE', color: '#5C8A6E', border: '1px solid #5C8A6E' } 
+                  : { backgroundColor: '#1C1917', color: 'white' }}
+              >
+                {user?.subscriptions.includes(matchedAuthor.id) ? 'Subscrito' : 'Subscrever'}
+              </button>
+            </div>
+          </div>
+          
+          {/* Author Recent Content preview could go here if wanted */}
+          {search.trim() && (
+            <div className="mt-4 mb-2">
+              <h3 className="font-semibold text-gray-900">Mais recentes do canal {matchedAuthor.name}</h3>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Grid */}
       {filtered.length > 0 ? (

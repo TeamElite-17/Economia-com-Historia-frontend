@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { User, BookOpen, Award, Bell, Settings, Camera, MapPin, Calendar, Edit2, Save, X, FileText, Trash2, Edit3 } from 'lucide-react';
 import { CONTENT_ITEMS, QUIZZES, AUTHORS, formatViews, formatDate } from '../data/mockData';
 import { ContentCard } from '../components/ui/ContentCard';
 import { useAuth } from '../context/AuthContext';
-import { deleteContentItemBackend } from '../data/backendApi';
+import { deleteContentItemBackend, uploadImageFile, resolveMediaUrl } from '../data/backendApi';
 
 type Tab = 'overview' | 'history' | 'saved' | 'quizzes' | 'publications' | 'settings';
 
@@ -16,6 +16,14 @@ export function ProfilePage() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [editName, setEditName] = useState(user?.name || '');
   const [editBio, setEditBio] = useState(user?.bio || '');
+  const [editAvatar, setEditAvatar] = useState(user?.avatar || '');
+  const [editYoutube, setEditYoutube] = useState(user?.youtubeUrl || '');
+  const [editInstagram, setEditInstagram] = useState(user?.instagramUrl || '');
+  const [editFacebook, setEditFacebook] = useState(user?.facebookUrl || '');
+  const [editWebsite, setEditWebsite] = useState(user?.websiteUrl || '');
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [localContentItems, setLocalContentItems] = useState(CONTENT_ITEMS);
 
   if (!isLoggedIn) {
     return (
@@ -39,7 +47,6 @@ export function ProfilePage() {
   const completedQuizzes = QUIZZES.filter(q => user?.completedQuizzes.includes(q.id));
   const subscribedAuthors = AUTHORS.filter(a => user?.subscriptions.includes(a.id));
 
-  const [localContentItems, setLocalContentItems] = useState(CONTENT_ITEMS);
   const myPublications = localContentItems.filter(c => c.authorId === user?.id);
 
   const tabs: { id: Tab; label: string; icon: typeof User }[] = [
@@ -51,8 +58,21 @@ export function ProfilePage() {
     { id: 'settings', label: 'Definições', icon: Settings },
   ];
 
+  const ensureHttps = (url: string) => {
+    if (!url.trim()) return '';
+    return url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url.trim()}`;
+  };
+
   const handleSave = () => {
-    updateUser({ name: editName, bio: editBio });
+    updateUser({ 
+      name: editName, 
+      bio: editBio, 
+      avatar: editAvatar,
+      youtubeUrl: ensureHttps(editYoutube),
+      instagramUrl: ensureHttps(editInstagram),
+      facebookUrl: ensureHttps(editFacebook),
+      websiteUrl: ensureHttps(editWebsite) 
+    });
     setEditing(false);
   };
 
@@ -70,35 +90,86 @@ export function ProfilePage() {
     }
   };
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setIsUploading(true);
+      const res = await uploadImageFile(file);
+      if (res.url) {
+        setEditAvatar(res.url);
+        setEditing(true);
+      }
+    } catch (err) {
+      alert('Erro ao carregar a imagem. Tenta novamente.');
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
-      {/* Profile header */}
       <div className="bg-white rounded-2xl overflow-hidden shadow-sm mb-6">
-        <div className="h-28 relative" style={{ background: 'linear-gradient(135deg, #7B1D2D 0%, #9E2A3E 100%)' }}>
-          <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, #C9A84C 0%, transparent 50%)' }} />
-        </div>
-        <div className="px-6 pb-6">
-          <div className="flex items-end gap-4 -mt-10 mb-4 flex-wrap sm:flex-nowrap">
-            <div className="relative">
+        <div className="p-6 relative z-10">
+          <div className="flex items-center gap-4 mb-4 flex-wrap sm:flex-nowrap">
+            <div className="relative flex-shrink-0">
               <img
-                src={user?.avatar}
+                src={(editing && editAvatar) ? editAvatar : (user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'U')}&background=7B1D2D&color=fff&size=200`)}
                 alt={user?.name}
-                className="w-20 h-20 rounded-2xl object-cover border-4 border-white shadow-md"
+                className={`w-20 h-20 rounded-2xl object-cover border-4 border-white shadow-md bg-white ${isUploading ? 'opacity-50' : ''}`}
               />
-              <button className="absolute bottom-1 right-1 w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: '#7B1D2D' }}>
+              <button 
+                onClick={() => {
+                  if (!editing) setEditing(true);
+                  fileInputRef.current?.click();
+                }} 
+                disabled={isUploading}
+                className="absolute bottom-1 right-1 w-6 h-6 rounded-full flex items-center justify-center cursor-pointer disabled:opacity-50" 
+                style={{ backgroundColor: '#7B1D2D' }}
+                title="Carregar foto"
+              >
                 <Camera size={12} className="text-white" />
               </button>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleAvatarUpload} 
+                accept="image/*" 
+                className="hidden" 
+              />
             </div>
             <div className="flex-1 min-w-0 pb-1">
               {editing ? (
-                <input
-                  value={editName}
-                  onChange={e => setEditName(e.target.value)}
-                  className="text-lg font-bold text-gray-900 border-b-2 focus:outline-none w-full"
-                  style={{ borderColor: '#7B1D2D' }}
-                />
+                <div className="space-y-2 mb-1 mt-4 sm:mt-0">
+                  <input
+                    value={editName}
+                    onChange={e => setEditName(e.target.value)}
+                    placeholder="O teu nome"
+                    className="text-lg font-bold text-gray-900 border-b-2 focus:outline-none w-full bg-transparent"
+                    style={{ borderColor: '#7B1D2D' }}
+                  />
+                  <input
+                    value={editYoutube}
+                    onChange={e => setEditYoutube(e.target.value)}
+                    placeholder="Link do YouTube (opcional)"
+                    className="text-sm text-gray-600 border-b focus:outline-none w-full bg-transparent mt-2"
+                  />
+                  <input
+                    value={editInstagram}
+                    onChange={e => setEditInstagram(e.target.value)}
+                    placeholder="Link do Instagram (opcional)"
+                    className="text-sm text-gray-600 border-b focus:outline-none w-full bg-transparent mt-2"
+                  />
+                  <input
+                    value={editFacebook}
+                    onChange={e => setEditFacebook(e.target.value)}
+                    placeholder="Link do Facebook (opcional)"
+                    className="text-sm text-gray-600 border-b focus:outline-none w-full bg-transparent mt-2"
+                  />
+                </div>
               ) : (
-                <h1 className="text-gray-900 break-words" style={{ fontSize: '1.25rem' }}>{user?.name}</h1>
+                <h1 className="text-gray-900 break-words mt-4 sm:mt-0" style={{ fontSize: '1.25rem' }}>{user?.name}</h1>
               )}
               <div className="flex items-center gap-3 text-sm text-gray-500 mt-1 flex-wrap">
                 <span className="flex items-center gap-1 whitespace-nowrap"><MapPin size={13} /> {user?.province || 'Angola'}</span>

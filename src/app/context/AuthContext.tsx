@@ -135,14 +135,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   );
 
-  // Sincroniza o user no localStorage sempre que muda
   useEffect(() => {
     if (user) {
       localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+      
+      // Se não tivermos o profileId em memória mas temos utilizador logado (ex: refresh da página)
+      // Vamos tentar ir buscar à BD para sincronizar.
+      if (!profileId) {
+        getUserProfileByUserIdBackend(user.id)
+          .then((profile) => {
+            setProfileId(profile.profileId ?? null);
+            // Atualizar o utilizador local com os dados frescos da BD
+            setUser(prev => prev ? {
+              ...prev,
+              bio: (profile as any).bio ?? prev.bio,
+              province: (profile as any).region ?? prev.province,
+              name: (profile as any).name ?? prev.name,
+              avatar: (profile as any).avatarUrl ?? prev.avatar,
+              youtubeUrl: (profile as any).youtubeUrl,
+              instagramUrl: (profile as any).instagramUrl,
+              facebookUrl: (profile as any).facebookUrl,
+              websiteUrl: (profile as any).websiteUrl,
+            } : prev);
+          })
+          .catch(() => undefined);
+      }
     } else {
       localStorage.removeItem(USER_STORAGE_KEY);
     }
-  }, [user]);
+  }, [user, profileId]);
 
   const userRole = user ? normalizeBackendRole(user.role) : 'ESTUDANTE';
 
@@ -175,8 +196,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setProfileId(profile.profileId ?? null);
           return {
             ...nextUser,
-            bio: profile.bio ?? nextUser.bio,
-            province: profile.region ?? nextUser.province,
+            bio: (profile as any).bio ?? nextUser.bio,
+            province: (profile as any).region ?? nextUser.province,
+            name: (profile as any).name ?? nextUser.name,
+            avatar: (profile as any).avatarUrl ?? nextUser.avatar,
+            youtubeUrl: (profile as any).youtubeUrl,
+            instagramUrl: (profile as any).instagramUrl,
+            facebookUrl: (profile as any).facebookUrl,
+            websiteUrl: (profile as any).websiteUrl,
           };
         })
         .catch(() => {
@@ -266,6 +293,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         region: next.province,
         educationLevel: '',
         ageRange: '',
+        name: next.name,
+        avatarUrl: next.avatar,
+        youtubeUrl: next.youtubeUrl,
+        instagramUrl: next.instagramUrl,
+        facebookUrl: next.facebookUrl,
+        websiteUrl: next.websiteUrl,
       };
 
       if (profileId) {

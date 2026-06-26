@@ -300,6 +300,7 @@ export async function bootstrapWebData() {
     requestJson<unknown>('/v1/forum-threads'),
     requestJson<unknown>('/v1/categories'),
     requestJson<unknown>('/v1/users'),
+    requestJson<unknown>('/v1/profiles'),
   ]);
 
   const contentPayload = results[0].status === 'fulfilled' ? extractArray<AnyRecord>(results[0].value) : [];
@@ -309,6 +310,7 @@ export async function bootstrapWebData() {
   const commentPayload: AnyRecord[] = [];
   const categoryPayload = results[3].status === 'fulfilled' ? extractArray<AnyRecord>(results[3].value) : [];
   const userPayload = results[4].status === 'fulfilled' ? extractArray<AnyRecord>(results[4].value) : [];
+  const profilePayload = results[5].status === 'fulfilled' ? extractArray<AnyRecord>(results[5].value) : [];
 
   if (categoryPayload.length > 0) {
     applyCategories(categoryPayload.map((item) => String(item.name ?? item.slug ?? '')));
@@ -374,7 +376,19 @@ export async function bootstrapWebData() {
   }
 
   if (userPayload.length > 0) {
-    const mappedUsers = userPayload.map((item) => mapUser(item));
+    const mappedUsers = userPayload.map((item) => {
+      const u = mapUser(item);
+      const profile = profilePayload.find((p) => p.userId === u.id);
+      if (profile) {
+        u.bio = String(profile.bio ?? u.bio ?? '');
+        u.avatar = String(profile.avatarUrl ?? u.avatar ?? '');
+        (u as any).youtubeUrl = profile.youtubeUrl;
+        (u as any).instagramUrl = profile.instagramUrl;
+        (u as any).facebookUrl = profile.facebookUrl;
+        (u as any).websiteUrl = profile.websiteUrl;
+      }
+      return u;
+    });
     replaceArray(MOCK_USERS, mergeByKey(MOCK_USERS, mappedUsers, (item) => item.id));
   }
 
@@ -398,6 +412,10 @@ export async function bootstrapWebData() {
           : u.role === 'APROVADOR' ? 'Aprovador'
           : 'Administrador',
         institution: 'ISPTEC',
+        youtubeUrl: u.youtubeUrl,
+        instagramUrl: u.instagramUrl,
+        facebookUrl: u.facebookUrl,
+        websiteUrl: u.websiteUrl,
       }));
 
     replaceArray(AUTHORS, builtAuthors);
@@ -701,6 +719,12 @@ export async function createUserProfileBackend(payload: {
   ageRange?: string;
   educationLevel?: string;
   region?: string;
+  name?: string;
+  avatarUrl?: string;
+  youtubeUrl?: string;
+  instagramUrl?: string;
+  facebookUrl?: string;
+  websiteUrl?: string;
 }) {
   return requestJson('/v1/profiles', {
     method: 'POST',
@@ -714,6 +738,12 @@ export async function updateUserProfileBackend(profileId: string, payload: {
   ageRange?: string;
   educationLevel?: string;
   region?: string;
+  name?: string;
+  avatarUrl?: string;
+  youtubeUrl?: string;
+  instagramUrl?: string;
+  facebookUrl?: string;
+  websiteUrl?: string;
 }) {
   return requestJson(`/v1/profiles/${profileId}`, {
     method: 'PUT',

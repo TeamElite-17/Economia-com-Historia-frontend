@@ -12,6 +12,10 @@ export interface Author {
   subscribers: number;
   specialty: string;
   institution: string;
+  youtubeUrl?: string;
+  instagramUrl?: string;
+  facebookUrl?: string;
+  websiteUrl?: string;
 }
 
 export interface ContentItem {
@@ -105,6 +109,10 @@ export interface User {
   province: string;
   isActive: boolean;
   subscribersCount?: number;
+  youtubeUrl?: string;
+  instagramUrl?: string;
+  facebookUrl?: string;
+  websiteUrl?: string;
 }
 
 // Estes arrays são populados pelo backend via bootstrapWebData() em App.tsx.
