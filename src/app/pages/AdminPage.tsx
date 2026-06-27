@@ -45,6 +45,7 @@ import { useAuth } from '../context/AuthContext';
 import { ASSIGNABLE_ROLES, PROMOTABLE_ROLES, ROLE_LABELS, type BackendUserRole } from '../data/roles';
 import { HomePage } from './HomePage';
 import { FileUpload } from '../components/ui/FileUpload';
+import { MediaPlayer } from '../components/ui/MediaPlayer';
 
 const PROVINCES = [
   'Bengo', 'Benguela', 'Bié', 'Cabinda', 'Cuando Cubango', 'Cuanza Norte',
@@ -1355,6 +1356,29 @@ export function AdminPage() {
                             </span>
                             <span className="px-2 py-0.5 rounded-full" style={{ backgroundColor: '#F5E8EB', color: '#7B1D2D' }}>{c.category}</span>
                           </div>
+
+                          <details className="group border rounded-xl overflow-hidden bg-gray-50 border-gray-100">
+                            <summary className="text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer p-3 bg-white hover:bg-gray-50 transition-colors list-none flex items-center justify-between">
+                              Pré-visualizar Conteúdo
+                              <ChevronDown size={14} className="group-open:rotate-180 transition-transform" />
+                            </summary>
+                            <div className="border-t border-gray-100 bg-white">
+                              {c.type === 'article' ? (
+                                <div className="p-4 prose prose-sm max-w-none text-gray-700 max-h-64 overflow-y-auto" dangerouslySetInnerHTML={{ __html: c.content || '' }} />
+                              ) : (c.type === 'video' || c.type === 'podcast') && c.content ? (
+                                <div className="aspect-video bg-black">
+                                  <MediaPlayer
+                                    src={c.content}
+                                    type={c.type}
+                                    title={c.title}
+                                    poster={c.thumbnail}
+                                  />
+                                </div>
+                              ) : (
+                                <div className="p-4 text-sm text-gray-400">Sem conteúdo.</div>
+                              )}
+                            </div>
+                          </details>
                         </div>
                         <div className="flex gap-2 flex-shrink-0">
                           {user?.role === 'ESCRITOR' && (
@@ -1444,6 +1468,29 @@ export function AdminPage() {
                                   </span>
                                   <span className="px-2 py-0.5 rounded-full" style={{ backgroundColor: '#E8F5E8', color: '#5C8A6E' }}>Aprovado</span>
                                 </div>
+
+                                <details className="group border rounded-xl overflow-hidden bg-gray-50 border-gray-100 mt-3">
+                                  <summary className="text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer p-3 bg-white hover:bg-gray-50 transition-colors list-none flex items-center justify-between">
+                                    Pré-visualizar Conteúdo
+                                    <ChevronDown size={14} className="group-open:rotate-180 transition-transform" />
+                                  </summary>
+                                  <div className="border-t border-gray-100 bg-white">
+                                    {c.type === 'article' ? (
+                                      <div className="p-4 prose prose-sm max-w-none text-gray-700 max-h-64 overflow-y-auto" dangerouslySetInnerHTML={{ __html: c.content || '' }} />
+                                    ) : (c.type === 'video' || c.type === 'podcast') && c.content ? (
+                                      <div className="aspect-video bg-black">
+                                        <MediaPlayer
+                                          src={c.content}
+                                          type={c.type}
+                                          title={c.title}
+                                          poster={c.thumbnail}
+                                        />
+                                      </div>
+                                    ) : (
+                                      <div className="p-4 text-sm text-gray-400">Sem conteúdo.</div>
+                                    )}
+                                  </div>
+                                </details>
                               </div>
                               <div className="flex gap-2 flex-shrink-0">
                                 <button

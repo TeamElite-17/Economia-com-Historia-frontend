@@ -15,6 +15,7 @@ import {
 } from '../data/backendApi';
 import { useAuth } from '../context/AuthContext';
 import { MOCK_USERS } from '../data/mockData';
+import { MediaPlayer } from '../components/ui/MediaPlayer';
 
 interface ApprovalItem {
   id: string;
@@ -29,6 +30,7 @@ interface ApprovalItem {
   publishedAt: string;
   views: number;
   likes: number;
+  content: string;
 }
 
 function mapApproval(raw: Record<string, unknown>): ApprovalItem {
@@ -47,6 +49,7 @@ function mapApproval(raw: Record<string, unknown>): ApprovalItem {
     publishedAt: item.publishedAt,
     views: item.views,
     likes: item.likes,
+    content: item.content,
   };
 }
 
@@ -326,6 +329,27 @@ export function AprovadorPage() {
                   <div className="mb-5">
                     <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Descrição</h4>
                     <p className="text-sm text-gray-700 leading-relaxed">{selected.description || 'Sem descrição.'}</p>
+                  </div>
+
+                  {/* Content Preview */}
+                  <div className="mb-5">
+                    <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Conteúdo</h4>
+                    <div className="rounded-xl overflow-hidden border border-gray-100 bg-gray-50 relative">
+                      {selected.type === 'article' ? (
+                        <div className="p-4 prose prose-sm max-w-none text-gray-700 max-h-64 overflow-y-auto" dangerouslySetInnerHTML={{ __html: selected.content }} />
+                      ) : (selected.type === 'video' || selected.type === 'podcast') && selected.content ? (
+                        <div className="aspect-video bg-black">
+                          <MediaPlayer
+                            src={selected.content}
+                            type={selected.type}
+                            title={selected.title}
+                            poster={selected.thumbnail}
+                          />
+                        </div>
+                      ) : (
+                        <div className="p-4 text-sm text-gray-400">Sem conteúdo.</div>
+                      )}
+                    </div>
                   </div>
 
                   {/* Final checklist */}

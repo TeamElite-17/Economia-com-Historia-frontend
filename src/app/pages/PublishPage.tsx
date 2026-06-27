@@ -205,7 +205,7 @@ export function PublishPage() {
 
     setIsSaving(true);
     const tags = form.tags.split(',').map((t) => t.trim()).filter(Boolean);
-    const mediaType = form.type === 'video' ? 'VIDEO' : form.type === 'podcast' ? 'AUDIO' : 'TEXT';
+    const mediaType = form.type === 'video' ? 'VIDEO' : form.type === 'podcast' ? 'PODCAST' : 'TEXT';
     const status = defaultStatus();
 
     try {
