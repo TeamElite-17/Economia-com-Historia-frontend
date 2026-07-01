@@ -7,6 +7,7 @@ import {
 import { CONTENT_ITEMS, AUTHORS, MOCK_USERS, getAuthorById, formatViews, formatDate } from '../data/mockData';
 import { ContentCard } from '../components/ui/ContentCard';
 import { MediaPlayer } from '../components/ui/MediaPlayer';
+import { AiSummaryPanel } from '../components/ui/AiSummaryPanel';
 import { useAuth } from '../context/AuthContext';
 import {
   getContentStatsBackend,
@@ -342,6 +343,19 @@ export function ContentDetailPage() {
             <button className="flex items-center gap-2 px-4 py-2 rounded-full text-sm bg-white text-gray-600 transition-all hover:bg-gray-50" style={{ border: '1px solid #E5E7EB' }}>
               <Share2 size={16} /> Partilhar
             </button>
+
+            {/* AI Summary icon button — posicionado no extremo direito */}
+            {!isJindungoLocked && (
+              <div style={{ marginLeft: 'auto' }}>
+                <AiSummaryPanel
+                  contentType={content.type}
+                  title={content.title}
+                  description={content.description}
+                  body={content.type === 'article' ? content.content : undefined}
+                  mediaUrl={content.type !== 'article' ? content.content : undefined}
+                />
+              </div>
+            )}
           </div>
 
           {/* Author card — estilo YouTube */}
